@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWM Terminal v1.1.0</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css?v=1.1.0">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Lightweight Charts -->
+    <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
+</head>
+
+<body>
+
+    <div class="app-shell">
+        <!-- Top Navigation / Ticker Tape -->
+        <header class="terminal-header">
+            <div class="brand">
+                <span class="brand-icon">⚡</span>
+                <div style="display: flex; flex-direction: column;">
+                    <span style="line-height: 1;">المتداول</span>
+                    <span style="font-size: 10px; opacity: 0.6; font-family: monospace;">v1.1.0</span>
+                </div>
+            </div>
+
+            <nav class="main-nav" style="margin-left: auto; margin-right: 20px; display: flex; gap: 15px;">
+                <a href="#" style="color: #fff; text-decoration: none; opacity: 0.8;">الأسواق</a>
+                <a href="#" style="color: #fff; text-decoration: none; opacity: 0.8;">الأخبار</a>
+                <a href="#" style="color: #fff; text-decoration: none; opacity: 0.8;">التحليل</a>
+            </nav>
+
+            <div class="market-status">
+                <div class="stat-item" id="tasi-summary">
+                    <span class="stat-label">TASI</span>
+                    <span class="stat-value up" id="header-tasi-price">---</span>
+                    <span class="stat-value up" id="header-tasi-change">---</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Status</span>
+                    <span class="stat-value" style="color: var(--up-color)">● Connected</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Grid -->
+        <main class="terminal-grid">
+
+            <!-- Side Panel: Market Table -->
+            <aside class="panel market-panel" id="tableSection">
+                <div class="panel-toolbar">
+                    <input type="text" class="search-input" id="stockSearch" placeholder="بحث عن شركة..." />
+                    <!-- Fullscreen Toggle for Table -->
+                    <button class="control-btn" onclick="toggleFullscreen('tableSection')">⛶</button>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>الشركة</th>
+                                <th>الرمز</th>
+                                <th>السعر</th>
+                                <th>التغير</th>
+                                <th>%</th>
+                                <th>الأعلى</th>
+                                <th>الأدنى</th>
+                            </tr>
+                        </thead>
+                        <tbody id="market_table_body">
+                            <!-- Rows will be injected by app.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </aside>
+
+            <!-- Main Panel: Chart -->
+            <section class="panel chart-panel" id="chartSection">
+                <!-- Internal Chart Toolbar -->
+                <div class="chart-controls">
+                    <button class="control-btn active">1D</button>
+                    <!-- ... -->
+                    <button class="control-btn" onclick="toggleFullscreen('chartSection')">⛶</button>
+                </div>
+
+                <div id="chart-legend" class="chart-legend"></div>
+
+                <div id="main_chart_container"></div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Application Logic -->
+    <script src="app.js?v=1.1.0" defer></script>
+</body>
+
+</html>

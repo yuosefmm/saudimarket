@@ -1,0 +1,40 @@
+name: Daily Market Update
+
+on:
+  schedule:
+    # Run daily at 16:00 UTC (approx. 7:00 PM KSA after market close)
+    - cron: '0 16 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  update-market-data:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Create Service Account Key
+      env:
+        SERVICE_ACCOUNT_KEY: ${{ secrets.SERVICE_ACCOUNT_KEY }}
+      run: |
+        echo "$SERVICE_ACCOUNT_KEY" > serviceAccountKey.json
+
+    - name: Fetch Data (Fetch Phase)
+      run: python fetch_to_json.py
+
+    - name: Upload Data (Upload Phase)
+      run: python upload_from_json.py

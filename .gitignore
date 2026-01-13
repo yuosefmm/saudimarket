@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.env
+.venv/
+env/
+venv/
+.firebase/
+.firebaserc
+market_data_temp.json
+serviceAccountKey.json
+update_log.txt
+*.log

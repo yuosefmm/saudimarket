@@ -1,0 +1,4 @@
+firebase-admin
+yfinance
+pandas
+numpy

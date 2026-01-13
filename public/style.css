@@ -1,0 +1,361 @@
+:root {
+    /* Color Palette - Professional Dark Mode */
+    --bg-app: #0f172a;
+    /* Deep Slate */
+    --bg-panel: #1e293b;
+    /* Lighter Slate for panels */
+    --bg-input: #0f172a;
+    --bg-header: #1e293b;
+
+    /* Borders & Separators */
+    --border-subtle: 1px solid rgba(255, 255, 255, 0.08);
+    --border-highlight: 1px solid rgba(255, 255, 255, 0.15);
+
+    /* Text */
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --text-accent: #38bdf8;
+    /* Sky Blue */
+
+    /* Indicators */
+    --up-color: #10b981;
+    /* Emerald */
+    --down-color: #ef4444;
+    /* Red */
+    --warn-color: #f59e0b;
+    /* Amber */
+
+    /* Typography */
+    --font-main: 'IBM Plex Sans Arabic', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Segoe UI Mono', monospace;
+
+    /* Dimensions */
+    --header-height: 48px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    height: 100vh;
+    overflow: hidden;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- Layout Structure --- */
+.app-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Header - "Ticker Tape" Style */
+.terminal-header {
+    height: var(--header-height);
+    background: var(--bg-header);
+    border-bottom: var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    flex-shrink: 0;
+    z-index: 10;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.brand-icon {
+    color: var(--text-accent);
+}
+
+.market-status {
+    display: flex;
+    gap: 24px;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+.stat-item {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+}
+
+.stat-value {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.stat-value.up {
+    color: var(--up-color);
+}
+
+.stat-value.down {
+    color: var(--down-color);
+}
+
+/* Main Grid */
+.terminal-grid {
+    flex: 1;
+    display: grid;
+    /* 35% Table, 65% Chart */
+    grid-template-columns: 350px 1fr;
+    overflow: hidden;
+}
+
+/* Responsive Grid adjustment */
+@media (min-width: 1200px) {
+    .terminal-grid {
+        grid-template-columns: 400px 1fr;
+    }
+}
+
+/* Panels */
+.panel {
+    display: flex;
+    flex-direction: column;
+    border-right: var(--border-subtle);
+    background: var(--bg-panel);
+    position: relative;
+    overflow: hidden;
+}
+
+.panel:last-child {
+    border-right: none;
+}
+
+/* Charts Area */
+.chart-panel {
+    background: var(--bg-app);
+    /* Slightly darker for contrast */
+    position: relative;
+}
+
+#main_chart_container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    z-index: 1;
+}
+
+/* Table Area */
+.market-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-toolbar {
+    height: 40px;
+    border-bottom: var(--border-subtle);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    justify-content: space-between;
+    background: var(--bg-panel);
+}
+
+.search-input {
+    background: var(--bg-input);
+    border: var(--border-subtle);
+    color: var(--text-primary);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: var(--font-main);
+    width: 100%;
+    font-size: 0.85rem;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--text-accent);
+}
+
+/* Data Table */
+.table-container {
+    flex: 1;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--text-secondary) transparent;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.data-table th {
+    position: sticky;
+    top: 0;
+    background: var(--bg-panel);
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-align: right;
+    /* RTL alignment */
+    padding: 8px 12px;
+    border-bottom: var(--border-highlight);
+    white-space: nowrap;
+    z-index: 5;
+    font-size: 0.8rem;
+}
+
+.data-table td {
+    padding: 8px 12px;
+    border-bottom: var(--border-subtle);
+    white-space: nowrap;
+    text-align: right;
+    color: var(--text-primary);
+}
+
+.data-table tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+}
+
+.data-table tr.active {
+    background: rgba(56, 189, 248, 0.1);
+    /* Text accent fade */
+    border-left: 2px solid var(--text-accent);
+}
+
+/* Numeric Columns */
+.data-table th:first-child,
+.data-table td:first-child {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.col-price,
+.col-change,
+.col-percent,
+.col-high,
+.col-low {
+    font-family: var(--font-mono);
+    text-align: left !important;
+    /* Numbers LTR usually better, but for RTL app keep consistent? User language is Arabic. Let's keep Right for now, or match existing. */
+    direction: ltr;
+    /* Force LTR for numbers so negatives show correctly */
+    text-align: right !important;
+    /* But align them to the right in the cell */
+}
+
+/* Colors for data */
+.text-up {
+    color: var(--up-color);
+}
+
+.text-down {
+    color: var(--down-color);
+}
+
+/* Fullscreen Utilities */
+.fullscreen {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 1000;
+    background: var(--bg-app);
+}
+
+/* Controls Overlay for Chart */
+.chart-controls {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    /* LTR position, check RTL needs */
+    z-index: 20;
+    display: flex;
+    gap: 4px;
+    background: var(--bg-panel);
+    padding: 4px;
+    border-radius: 4px;
+    border: var(--border-subtle);
+}
+
+.chart-legend {
+    position: absolute;
+    top: 50px;
+    left: 12px;
+    z-index: 50;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: #f8fafc;
+    background: rgba(15, 23, 42, 0.95);
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    pointer-events: none;
+    direction: ltr;
+    min-width: 300px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+}
+
+.legend-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 4px;
+}
+
+.legend-label {
+    color: #94a3b8;
+}
+
+.legend-value {
+    color: #fff;
+    font-weight: 600;
+}
+
+.control-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.control-btn:hover,
+.control-btn.active {
+    background: var(--bg-app);
+    color: var(--text-primary);
+}
+
+/* RTL Specific Overrides if needed */
+body {
+    direction: rtl;
+}
+
+.terminal-grid {
+    /* Swap columns for RTL visual flow if preferred */
+    /* grid-template-columns: 1fr 350px; No, usually sidebar is on one side. Let's stick to the grid definition. */
+}

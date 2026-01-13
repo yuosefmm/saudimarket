@@ -1,0 +1,2102 @@
+{
+  "1010": {
+    "symbol": "1010",
+    "yf_symbol": "1010.SR",
+    "name": "الرياض"
+  },
+  "1020": {
+    "symbol": "1020",
+    "yf_symbol": "1020.SR",
+    "name": "الجزيرة"
+  },
+  "1030": {
+    "symbol": "1030",
+    "yf_symbol": "1030.SR",
+    "name": "الإستثمار"
+  },
+  "1050": {
+    "symbol": "1050",
+    "yf_symbol": "1050.SR",
+    "name": "بي اس اف"
+  },
+  "1060": {
+    "symbol": "1060",
+    "yf_symbol": "1060.SR",
+    "name": "الأول"
+  },
+  "1080": {
+    "symbol": "1080",
+    "yf_symbol": "1080.SR",
+    "name": "العربي"
+  },
+  "1111": {
+    "symbol": "1111",
+    "yf_symbol": "1111.SR",
+    "name": "مجموعة تداول"
+  },
+  "1120": {
+    "symbol": "1120",
+    "yf_symbol": "1120.SR",
+    "name": "الراجحي"
+  },
+  "1140": {
+    "symbol": "1140",
+    "yf_symbol": "1140.SR",
+    "name": "البلاد"
+  },
+  "1150": {
+    "symbol": "1150",
+    "yf_symbol": "1150.SR",
+    "name": "الإنماء"
+  },
+  "1180": {
+    "symbol": "1180",
+    "yf_symbol": "1180.SR",
+    "name": "الأهلي"
+  },
+  "1182": {
+    "symbol": "1182",
+    "yf_symbol": "1182.SR",
+    "name": "أملاك"
+  },
+  "1183": {
+    "symbol": "1183",
+    "yf_symbol": "1183.SR",
+    "name": "سهل"
+  },
+  "1201": {
+    "symbol": "1201",
+    "yf_symbol": "1201.SR",
+    "name": "تكوين"
+  },
+  "1202": {
+    "symbol": "1202",
+    "yf_symbol": "1202.SR",
+    "name": "مبكو"
+  },
+  "1210": {
+    "symbol": "1210",
+    "yf_symbol": "1210.SR",
+    "name": "بي سي آي"
+  },
+  "1211": {
+    "symbol": "1211",
+    "yf_symbol": "1211.SR",
+    "name": "معادن"
+  },
+  "1212": {
+    "symbol": "1212",
+    "yf_symbol": "1212.SR",
+    "name": "أسترا الصناعية"
+  },
+  "1213": {
+    "symbol": "1213",
+    "yf_symbol": "1213.SR",
+    "name": "نسيج"
+  },
+  "1214": {
+    "symbol": "1214",
+    "yf_symbol": "1214.SR",
+    "name": "شاكر"
+  },
+  "1301": {
+    "symbol": "1301",
+    "yf_symbol": "1301.SR",
+    "name": "أسلاك"
+  },
+  "1302": {
+    "symbol": "1302",
+    "yf_symbol": "1302.SR",
+    "name": "بوان"
+  },
+  "1303": {
+    "symbol": "1303",
+    "yf_symbol": "1303.SR",
+    "name": "الصناعات الكهربائية"
+  },
+  "1304": {
+    "symbol": "1304",
+    "yf_symbol": "1304.SR",
+    "name": "اليمامة للحديد"
+  },
+  "1320": {
+    "symbol": "1320",
+    "yf_symbol": "1320.SR",
+    "name": "أنابيب السعودية"
+  },
+  "1321": {
+    "symbol": "1321",
+    "yf_symbol": "1321.SR",
+    "name": "أنابيب الشرق"
+  },
+  "1322": {
+    "symbol": "1322",
+    "yf_symbol": "1322.SR",
+    "name": "أماك"
+  },
+  "1323": {
+    "symbol": "1323",
+    "yf_symbol": "1323.SR",
+    "name": "يو سي آي سي"
+  },
+  "1810": {
+    "symbol": "1810",
+    "yf_symbol": "1810.SR",
+    "name": "سيرا"
+  },
+  "1820": {
+    "symbol": "1820",
+    "yf_symbol": "1820.SR",
+    "name": "بان"
+  },
+  "1830": {
+    "symbol": "1830",
+    "yf_symbol": "1830.SR",
+    "name": "لجام للرياضة"
+  },
+  "1831": {
+    "symbol": "1831",
+    "yf_symbol": "1831.SR",
+    "name": "مهارة"
+  },
+  "1832": {
+    "symbol": "1832",
+    "yf_symbol": "1832.SR",
+    "name": "صدر"
+  },
+  "1833": {
+    "symbol": "1833",
+    "yf_symbol": "1833.SR",
+    "name": "الموارد"
+  },
+  "1834": {
+    "symbol": "1834",
+    "yf_symbol": "1834.SR",
+    "name": "سماسكو"
+  },
+  "1835": {
+    "symbol": "1835",
+    "yf_symbol": "1835.SR",
+    "name": "تمكين"
+  },
+  "2001": {
+    "symbol": "2001",
+    "yf_symbol": "2001.SR",
+    "name": "كيمانول"
+  },
+  "2010": {
+    "symbol": "2010",
+    "yf_symbol": "2010.SR",
+    "name": "سابك"
+  },
+  "2020": {
+    "symbol": "2020",
+    "yf_symbol": "2020.SR",
+    "name": "سابك للمغذيات الزراعية"
+  },
+  "2030": {
+    "symbol": "2030",
+    "yf_symbol": "2030.SR",
+    "name": "المصافي"
+  },
+  "2040": {
+    "symbol": "2040",
+    "yf_symbol": "2040.SR",
+    "name": "الخزف السعودي"
+  },
+  "2050": {
+    "symbol": "2050",
+    "yf_symbol": "2050.SR",
+    "name": "مجموعة صافولا"
+  },
+  "2060": {
+    "symbol": "2060",
+    "yf_symbol": "2060.SR",
+    "name": "التصنيع"
+  },
+  "2070": {
+    "symbol": "2070",
+    "yf_symbol": "2070.SR",
+    "name": "الدوائية"
+  },
+  "2080": {
+    "symbol": "2080",
+    "yf_symbol": "2080.SR",
+    "name": "الغاز"
+  },
+  "2081": {
+    "symbol": "2081",
+    "yf_symbol": "2081.SR",
+    "name": "الخريف"
+  },
+  "2082": {
+    "symbol": "2082",
+    "yf_symbol": "2082.SR",
+    "name": "أكوا باور"
+  },
+  "2083": {
+    "symbol": "2083",
+    "yf_symbol": "2083.SR",
+    "name": "مرافق"
+  },
+  "2084": {
+    "symbol": "2084",
+    "yf_symbol": "2084.SR",
+    "name": "مياهنا"
+  },
+  "2090": {
+    "symbol": "2090",
+    "yf_symbol": "2090.SR",
+    "name": "جبسكو"
+  },
+  "2100": {
+    "symbol": "2100",
+    "yf_symbol": "2100.SR",
+    "name": "وفرة"
+  },
+  "2110": {
+    "symbol": "2110",
+    "yf_symbol": "2110.SR",
+    "name": "الكابلات السعودية"
+  },
+  "2120": {
+    "symbol": "2120",
+    "yf_symbol": "2120.SR",
+    "name": "متطورة"
+  },
+  "2130": {
+    "symbol": "2130",
+    "yf_symbol": "2130.SR",
+    "name": "صدق"
+  },
+  "2140": {
+    "symbol": "2140",
+    "yf_symbol": "2140.SR",
+    "name": "أيان"
+  },
+  "2150": {
+    "symbol": "2150",
+    "yf_symbol": "2150.SR",
+    "name": "زجاج"
+  },
+  "2160": {
+    "symbol": "2160",
+    "yf_symbol": "2160.SR",
+    "name": "أميانتيت"
+  },
+  "2170": {
+    "symbol": "2170",
+    "yf_symbol": "2170.SR",
+    "name": "اللجين"
+  },
+  "2180": {
+    "symbol": "2180",
+    "yf_symbol": "2180.SR",
+    "name": "فيبكو"
+  },
+  "2190": {
+    "symbol": "2190",
+    "yf_symbol": "2190.SR",
+    "name": "سيسكو القابضة"
+  },
+  "2200": {
+    "symbol": "2200",
+    "yf_symbol": "2200.SR",
+    "name": "أنابيب"
+  },
+  "2210": {
+    "symbol": "2210",
+    "yf_symbol": "2210.SR",
+    "name": "نماء للكيماويات"
+  },
+  "2220": {
+    "symbol": "2220",
+    "yf_symbol": "2220.SR",
+    "name": "معدنية"
+  },
+  "2222": {
+    "symbol": "2222",
+    "yf_symbol": "2222.SR",
+    "name": "أرامكو السعودية"
+  },
+  "2223": {
+    "symbol": "2223",
+    "yf_symbol": "2223.SR",
+    "name": "لوبريف"
+  },
+  "2230": {
+    "symbol": "2230",
+    "yf_symbol": "2230.SR",
+    "name": "الكيميائية"
+  },
+  "2240": {
+    "symbol": "2240",
+    "yf_symbol": "2240.SR",
+    "name": "صناعات"
+  },
+  "2250": {
+    "symbol": "2250",
+    "yf_symbol": "2250.SR",
+    "name": "المجموعة السعودية"
+  },
+  "2270": {
+    "symbol": "2270",
+    "yf_symbol": "2270.SR",
+    "name": "سدافكو"
+  },
+  "2280": {
+    "symbol": "2280",
+    "yf_symbol": "2280.SR",
+    "name": "المراعي"
+  },
+  "2281": {
+    "symbol": "2281",
+    "yf_symbol": "2281.SR",
+    "name": "تنمية"
+  },
+  "2282": {
+    "symbol": "2282",
+    "yf_symbol": "2282.SR",
+    "name": "نقي"
+  },
+  "2283": {
+    "symbol": "2283",
+    "yf_symbol": "2283.SR",
+    "name": "المطاحن الأولى"
+  },
+  "2284": {
+    "symbol": "2284",
+    "yf_symbol": "2284.SR",
+    "name": "المطاحن الحديثة"
+  },
+  "2285": {
+    "symbol": "2285",
+    "yf_symbol": "2285.SR",
+    "name": "المطاحن العربية"
+  },
+  "2286": {
+    "symbol": "2286",
+    "yf_symbol": "2286.SR",
+    "name": "المطاحن الرابعة"
+  },
+  "2287": {
+    "symbol": "2287",
+    "yf_symbol": "2287.SR",
+    "name": "إنتاج"
+  },
+  "2290": {
+    "symbol": "2290",
+    "yf_symbol": "2290.SR",
+    "name": "ينساب"
+  },
+  "2300": {
+    "symbol": "2300",
+    "yf_symbol": "2300.SR",
+    "name": "صناعة الورق"
+  },
+  "2310": {
+    "symbol": "2310",
+    "yf_symbol": "2310.SR",
+    "name": "سبكيم العالمية"
+  },
+  "2320": {
+    "symbol": "2320",
+    "yf_symbol": "2320.SR",
+    "name": "البابطين"
+  },
+  "2330": {
+    "symbol": "2330",
+    "yf_symbol": "2330.SR",
+    "name": "المتقدمة"
+  },
+  "2340": {
+    "symbol": "2340",
+    "yf_symbol": "2340.SR",
+    "name": "ارتيكس"
+  },
+  "2350": {
+    "symbol": "2350",
+    "yf_symbol": "2350.SR",
+    "name": "كيان السعودية"
+  },
+  "2360": {
+    "symbol": "2360",
+    "yf_symbol": "2360.SR",
+    "name": "الفخارية"
+  },
+  "2370": {
+    "symbol": "2370",
+    "yf_symbol": "2370.SR",
+    "name": "مسك"
+  },
+  "2380": {
+    "symbol": "2380",
+    "yf_symbol": "2380.SR",
+    "name": "بترو رابغ"
+  },
+  "2381": {
+    "symbol": "2381",
+    "yf_symbol": "2381.SR",
+    "name": "الحفر العربية"
+  },
+  "2382": {
+    "symbol": "2382",
+    "yf_symbol": "2382.SR",
+    "name": "أديس"
+  },
+  "3002": {
+    "symbol": "3002",
+    "yf_symbol": "3002.SR",
+    "name": "أسمنت نجران"
+  },
+  "3003": {
+    "symbol": "3003",
+    "yf_symbol": "3003.SR",
+    "name": "أسمنت المدينة"
+  },
+  "3004": {
+    "symbol": "3004",
+    "yf_symbol": "3004.SR",
+    "name": "أسمنت الشمالية"
+  },
+  "3005": {
+    "symbol": "3005",
+    "yf_symbol": "3005.SR",
+    "name": "أسمنت ام القرى"
+  },
+  "3007": {
+    "symbol": "3007",
+    "yf_symbol": "3007.SR",
+    "name": "الواحة"
+  },
+  "3008": {
+    "symbol": "3008",
+    "yf_symbol": "3008.SR",
+    "name": "الكثيري"
+  },
+  "3010": {
+    "symbol": "3010",
+    "yf_symbol": "3010.SR",
+    "name": "أسمنت العربية"
+  },
+  "3020": {
+    "symbol": "3020",
+    "yf_symbol": "3020.SR",
+    "name": "أسمنت اليمامة"
+  },
+  "3030": {
+    "symbol": "3030",
+    "yf_symbol": "3030.SR",
+    "name": "أسمنت السعودية"
+  },
+  "3040": {
+    "symbol": "3040",
+    "yf_symbol": "3040.SR",
+    "name": "أسمنت القصيم"
+  },
+  "3050": {
+    "symbol": "3050",
+    "yf_symbol": "3050.SR",
+    "name": "أسمنت الجنوب"
+  },
+  "3060": {
+    "symbol": "3060",
+    "yf_symbol": "3060.SR",
+    "name": "أسمنت ينبع"
+  },
+  "3080": {
+    "symbol": "3080",
+    "yf_symbol": "3080.SR",
+    "name": "أسمنت الشرقية"
+  },
+  "3090": {
+    "symbol": "3090",
+    "yf_symbol": "3090.SR",
+    "name": "أسمنت تبوك"
+  },
+  "3091": {
+    "symbol": "3091",
+    "yf_symbol": "3091.SR",
+    "name": "أسمنت الجوف"
+  },
+  "3092": {
+    "symbol": "3092",
+    "yf_symbol": "3092.SR",
+    "name": "أسمنت الرياض"
+  },
+  "4001": {
+    "symbol": "4001",
+    "yf_symbol": "4001.SR",
+    "name": "أسواق ع العثيم"
+  },
+  "4002": {
+    "symbol": "4002",
+    "yf_symbol": "4002.SR",
+    "name": "المواساة"
+  },
+  "4003": {
+    "symbol": "4003",
+    "yf_symbol": "4003.SR",
+    "name": "إكسترا"
+  },
+  "4004": {
+    "symbol": "4004",
+    "yf_symbol": "4004.SR",
+    "name": "دله الصحية"
+  },
+  "4005": {
+    "symbol": "4005",
+    "yf_symbol": "4005.SR",
+    "name": "رعاية"
+  },
+  "4006": {
+    "symbol": "4006",
+    "yf_symbol": "4006.SR",
+    "name": "أسواق المزرعة"
+  },
+  "4007": {
+    "symbol": "4007",
+    "yf_symbol": "4007.SR",
+    "name": "الحمادي"
+  },
+  "4008": {
+    "symbol": "4008",
+    "yf_symbol": "4008.SR",
+    "name": "ساكو"
+  },
+  "4009": {
+    "symbol": "4009",
+    "yf_symbol": "4009.SR",
+    "name": "السعودي الألماني الصحية"
+  },
+  "4011": {
+    "symbol": "4011",
+    "yf_symbol": "4011.SR",
+    "name": "لازوردي"
+  },
+  "4012": {
+    "symbol": "4012",
+    "yf_symbol": "4012.SR",
+    "name": "الأصيل"
+  },
+  "4013": {
+    "symbol": "4013",
+    "yf_symbol": "4013.SR",
+    "name": "سليمان الحبيب"
+  },
+  "4014": {
+    "symbol": "4014",
+    "yf_symbol": "4014.SR",
+    "name": "دار المعدات"
+  },
+  "4015": {
+    "symbol": "4015",
+    "yf_symbol": "4015.SR",
+    "name": "جمجوم فارما"
+  },
+  "4016": {
+    "symbol": "4016",
+    "yf_symbol": "4016.SR",
+    "name": "أفالون فارما"
+  },
+  "4017": {
+    "symbol": "4017",
+    "yf_symbol": "4017.SR",
+    "name": "فقيه الطبية"
+  },
+  "4018": {
+    "symbol": "4018",
+    "yf_symbol": "4018.SR",
+    "name": "الموسى"
+  },
+  "4019": {
+    "symbol": "4019",
+    "yf_symbol": "4019.SR",
+    "name": "اس ام سي للرعاية الصحية"
+  },
+  "4020": {
+    "symbol": "4020",
+    "yf_symbol": "4020.SR",
+    "name": "العقارية"
+  },
+  "4021": {
+    "symbol": "4021",
+    "yf_symbol": "4021.SR",
+    "name": "المركز الكندي الطبي"
+  },
+  "4030": {
+    "symbol": "4030",
+    "yf_symbol": "4030.SR",
+    "name": "البحري"
+  },
+  "4031": {
+    "symbol": "4031",
+    "yf_symbol": "4031.SR",
+    "name": "الخدمات الأرضية"
+  },
+  "4040": {
+    "symbol": "4040",
+    "yf_symbol": "4040.SR",
+    "name": "سابتكو"
+  },
+  "4050": {
+    "symbol": "4050",
+    "yf_symbol": "4050.SR",
+    "name": "ساسكو"
+  },
+  "4051": {
+    "symbol": "4051",
+    "yf_symbol": "4051.SR",
+    "name": "باعظيم"
+  },
+  "4061": {
+    "symbol": "4061",
+    "yf_symbol": "4061.SR",
+    "name": "أنعام القابضة"
+  },
+  "4070": {
+    "symbol": "4070",
+    "yf_symbol": "4070.SR",
+    "name": "تهامة"
+  },
+  "4071": {
+    "symbol": "4071",
+    "yf_symbol": "4071.SR",
+    "name": "العربية"
+  },
+  "4072": {
+    "symbol": "4072",
+    "yf_symbol": "4072.SR",
+    "name": "مجموعة إم بي سي"
+  },
+  "4080": {
+    "symbol": "4080",
+    "yf_symbol": "4080.SR",
+    "name": "سناد القابضة"
+  },
+  "4081": {
+    "symbol": "4081",
+    "yf_symbol": "4081.SR",
+    "name": "النايفات"
+  },
+  "4082": {
+    "symbol": "4082",
+    "yf_symbol": "4082.SR",
+    "name": "مرنة"
+  },
+  "4083": {
+    "symbol": "4083",
+    "yf_symbol": "4083.SR",
+    "name": "تسهيل"
+  },
+  "4084": {
+    "symbol": "4084",
+    "yf_symbol": "4084.SR",
+    "name": "دراية"
+  },
+  "4090": {
+    "symbol": "4090",
+    "yf_symbol": "4090.SR",
+    "name": "طيبة"
+  },
+  "4100": {
+    "symbol": "4100",
+    "yf_symbol": "4100.SR",
+    "name": "مكة"
+  },
+  "4110": {
+    "symbol": "4110",
+    "yf_symbol": "4110.SR",
+    "name": "باتك"
+  },
+  "4130": {
+    "symbol": "4130",
+    "yf_symbol": "4130.SR",
+    "name": "درب السعودية"
+  },
+  "4140": {
+    "symbol": "4140",
+    "yf_symbol": "4140.SR",
+    "name": "صادرات"
+  },
+  "4141": {
+    "symbol": "4141",
+    "yf_symbol": "4141.SR",
+    "name": "العمران"
+  },
+  "4142": {
+    "symbol": "4142",
+    "yf_symbol": "4142.SR",
+    "name": "كابلات الرياض"
+  },
+  "4143": {
+    "symbol": "4143",
+    "yf_symbol": "4143.SR",
+    "name": "تالكو"
+  },
+  "4144": {
+    "symbol": "4144",
+    "yf_symbol": "4144.SR",
+    "name": "رؤوم"
+  },
+  "4145": {
+    "symbol": "4145",
+    "yf_symbol": "4145.SR",
+    "name": "العبيكان للزجاج"
+  },
+  "4146": {
+    "symbol": "4146",
+    "yf_symbol": "4146.SR",
+    "name": "جاز"
+  },
+  "4147": {
+    "symbol": "4147",
+    "yf_symbol": "4147.SR",
+    "name": "سي جي إس"
+  },
+  "4150": {
+    "symbol": "4150",
+    "yf_symbol": "4150.SR",
+    "name": "التعمير"
+  },
+  "4160": {
+    "symbol": "4160",
+    "yf_symbol": "4160.SR",
+    "name": "ثمار"
+  },
+  "4161": {
+    "symbol": "4161",
+    "yf_symbol": "4161.SR",
+    "name": "بن داود"
+  },
+  "4162": {
+    "symbol": "4162",
+    "yf_symbol": "4162.SR",
+    "name": "المنجم"
+  },
+  "4163": {
+    "symbol": "4163",
+    "yf_symbol": "4163.SR",
+    "name": "الدواء"
+  },
+  "4164": {
+    "symbol": "4164",
+    "yf_symbol": "4164.SR",
+    "name": "النهدي"
+  },
+  "4165": {
+    "symbol": "4165",
+    "yf_symbol": "4165.SR",
+    "name": "الماجد للعود"
+  },
+  "4170": {
+    "symbol": "4170",
+    "yf_symbol": "4170.SR",
+    "name": "شمس"
+  },
+  "4180": {
+    "symbol": "4180",
+    "yf_symbol": "4180.SR",
+    "name": "مجموعة فتيحي"
+  },
+  "4190": {
+    "symbol": "4190",
+    "yf_symbol": "4190.SR",
+    "name": "جرير"
+  },
+  "4191": {
+    "symbol": "4191",
+    "yf_symbol": "4191.SR",
+    "name": "أبو معطي"
+  },
+  "4192": {
+    "symbol": "4192",
+    "yf_symbol": "4192.SR",
+    "name": "السيف غاليري"
+  },
+  "4193": {
+    "symbol": "4193",
+    "yf_symbol": "4193.SR",
+    "name": "نايس ون"
+  },
+  "4194": {
+    "symbol": "4194",
+    "yf_symbol": "4194.SR",
+    "name": "محطة البناء"
+  },
+  "4200": {
+    "symbol": "4200",
+    "yf_symbol": "4200.SR",
+    "name": "الدريس"
+  },
+  "4210": {
+    "symbol": "4210",
+    "yf_symbol": "4210.SR",
+    "name": "الأبحاث والإعلام"
+  },
+  "4220": {
+    "symbol": "4220",
+    "yf_symbol": "4220.SR",
+    "name": "إعمار"
+  },
+  "4230": {
+    "symbol": "4230",
+    "yf_symbol": "4230.SR",
+    "name": "البحر الأحمر"
+  },
+  "4240": {
+    "symbol": "4240",
+    "yf_symbol": "4240.SR",
+    "name": "سينومي ريتيل"
+  },
+  "4250": {
+    "symbol": "4250",
+    "yf_symbol": "4250.SR",
+    "name": "جبل عمر"
+  },
+  "4260": {
+    "symbol": "4260",
+    "yf_symbol": "4260.SR",
+    "name": "بدجت السعودية"
+  },
+  "4261": {
+    "symbol": "4261",
+    "yf_symbol": "4261.SR",
+    "name": "ذيب"
+  },
+  "4262": {
+    "symbol": "4262",
+    "yf_symbol": "4262.SR",
+    "name": "لومي"
+  },
+  "4263": {
+    "symbol": "4263",
+    "yf_symbol": "4263.SR",
+    "name": "سال"
+  },
+  "4264": {
+    "symbol": "4264",
+    "yf_symbol": "4264.SR",
+    "name": "طيران ناس"
+  },
+  "4265": {
+    "symbol": "4265",
+    "yf_symbol": "4265.SR",
+    "name": "شري"
+  },
+  "4270": {
+    "symbol": "4270",
+    "yf_symbol": "4270.SR",
+    "name": "طباعة وتغليف"
+  },
+  "4280": {
+    "symbol": "4280",
+    "yf_symbol": "4280.SR",
+    "name": "المملكة"
+  },
+  "4290": {
+    "symbol": "4290",
+    "yf_symbol": "4290.SR",
+    "name": "الخليج للتدريب"
+  },
+  "4291": {
+    "symbol": "4291",
+    "yf_symbol": "4291.SR",
+    "name": "الوطنية للتعليم"
+  },
+  "4292": {
+    "symbol": "4292",
+    "yf_symbol": "4292.SR",
+    "name": "عطاء"
+  },
+  "4300": {
+    "symbol": "4300",
+    "yf_symbol": "4300.SR",
+    "name": "دار الأركان"
+  },
+  "4310": {
+    "symbol": "4310",
+    "yf_symbol": "4310.SR",
+    "name": "مدينة المعرفة"
+  },
+  "4320": {
+    "symbol": "4320",
+    "yf_symbol": "4320.SR",
+    "name": "الأندلس"
+  },
+  "4321": {
+    "symbol": "4321",
+    "yf_symbol": "4321.SR",
+    "name": "سينومي سنترز"
+  },
+  "4322": {
+    "symbol": "4322",
+    "yf_symbol": "4322.SR",
+    "name": "رتال"
+  },
+  "4323": {
+    "symbol": "4323",
+    "yf_symbol": "4323.SR",
+    "name": "سمو"
+  },
+  "4324": {
+    "symbol": "4324",
+    "yf_symbol": "4324.SR",
+    "name": "بنان"
+  },
+  "4325": {
+    "symbol": "4325",
+    "yf_symbol": "4325.SR",
+    "name": "مسار"
+  },
+  "4326": {
+    "symbol": "4326",
+    "yf_symbol": "4326.SR",
+    "name": "الماجدية"
+  },
+  "4327": {
+    "symbol": "4327",
+    "yf_symbol": "4327.SR",
+    "name": "الرمز"
+  },
+  "4330": {
+    "symbol": "4330",
+    "yf_symbol": "4330.SR",
+    "name": "الرياض ريت"
+  },
+  "4331": {
+    "symbol": "4331",
+    "yf_symbol": "4331.SR",
+    "name": "الجزيرة ريت"
+  },
+  "4332": {
+    "symbol": "4332",
+    "yf_symbol": "4332.SR",
+    "name": "جدوى ريت الحرمين"
+  },
+  "4333": {
+    "symbol": "4333",
+    "yf_symbol": "4333.SR",
+    "name": "تعليم ريت"
+  },
+  "4334": {
+    "symbol": "4334",
+    "yf_symbol": "4334.SR",
+    "name": "المعذر ريت"
+  },
+  "4335": {
+    "symbol": "4335",
+    "yf_symbol": "4335.SR",
+    "name": "مشاركة ريت"
+  },
+  "4336": {
+    "symbol": "4336",
+    "yf_symbol": "4336.SR",
+    "name": "ملكية ريت"
+  },
+  "4337": {
+    "symbol": "4337",
+    "yf_symbol": "4337.SR",
+    "name": "العزيزية ريت"
+  },
+  "4338": {
+    "symbol": "4338",
+    "yf_symbol": "4338.SR",
+    "name": "الأهلي ريت 1"
+  },
+  "4339": {
+    "symbol": "4339",
+    "yf_symbol": "4339.SR",
+    "name": "دراية ريت"
+  },
+  "4340": {
+    "symbol": "4340",
+    "yf_symbol": "4340.SR",
+    "name": "الراجحي ريت"
+  },
+  "4342": {
+    "symbol": "4342",
+    "yf_symbol": "4342.SR",
+    "name": "جدوى ريت السعودية"
+  },
+  "4344": {
+    "symbol": "4344",
+    "yf_symbol": "4344.SR",
+    "name": "سدكو كابيتال ريت"
+  },
+  "4345": {
+    "symbol": "4345",
+    "yf_symbol": "4345.SR",
+    "name": "الإنماء ريت للتجزئة"
+  },
+  "4346": {
+    "symbol": "4346",
+    "yf_symbol": "4346.SR",
+    "name": "ميفك ريت"
+  },
+  "4347": {
+    "symbol": "4347",
+    "yf_symbol": "4347.SR",
+    "name": "بنيان ريت"
+  },
+  "4348": {
+    "symbol": "4348",
+    "yf_symbol": "4348.SR",
+    "name": "الخبير ريت"
+  },
+  "4349": {
+    "symbol": "4349",
+    "yf_symbol": "4349.SR",
+    "name": "الإنماء ريت الفندقي"
+  },
+  "4350": {
+    "symbol": "4350",
+    "yf_symbol": "4350.SR",
+    "name": "الاستثمار ريت"
+  },
+  "5022": {
+    "symbol": "5022",
+    "yf_symbol": "5022.SR",
+    "name": "5022"
+  },
+  "5023": {
+    "symbol": "5023",
+    "yf_symbol": "5023.SR",
+    "name": "5023"
+  },
+  "5110": {
+    "symbol": "5110",
+    "yf_symbol": "5110.SR",
+    "name": "كهرباء السعودية"
+  },
+  "6001": {
+    "symbol": "6001",
+    "yf_symbol": "6001.SR",
+    "name": "حلواني إخوان"
+  },
+  "6002": {
+    "symbol": "6002",
+    "yf_symbol": "6002.SR",
+    "name": "هرفي للأغذية"
+  },
+  "6004": {
+    "symbol": "6004",
+    "yf_symbol": "6004.SR",
+    "name": "كاتريون"
+  },
+  "6010": {
+    "symbol": "6010",
+    "yf_symbol": "6010.SR",
+    "name": "نادك"
+  },
+  "6012": {
+    "symbol": "6012",
+    "yf_symbol": "6012.SR",
+    "name": "ريدان"
+  },
+  "6013": {
+    "symbol": "6013",
+    "yf_symbol": "6013.SR",
+    "name": "التطويرية الغذائية"
+  },
+  "6014": {
+    "symbol": "6014",
+    "yf_symbol": "6014.SR",
+    "name": "الآمار"
+  },
+  "6015": {
+    "symbol": "6015",
+    "yf_symbol": "6015.SR",
+    "name": "أمريكانا"
+  },
+  "6016": {
+    "symbol": "6016",
+    "yf_symbol": "6016.SR",
+    "name": "برغرايززر"
+  },
+  "6017": {
+    "symbol": "6017",
+    "yf_symbol": "6017.SR",
+    "name": "جاهز"
+  },
+  "6018": {
+    "symbol": "6018",
+    "yf_symbol": "6018.SR",
+    "name": "الأندية للرياضة"
+  },
+  "6019": {
+    "symbol": "6019",
+    "yf_symbol": "6019.SR",
+    "name": "المسار الشامل"
+  },
+  "6020": {
+    "symbol": "6020",
+    "yf_symbol": "6020.SR",
+    "name": "جاكو"
+  },
+  "6040": {
+    "symbol": "6040",
+    "yf_symbol": "6040.SR",
+    "name": "تبوك الزراعية"
+  },
+  "6050": {
+    "symbol": "6050",
+    "yf_symbol": "6050.SR",
+    "name": "الأسماك"
+  },
+  "6060": {
+    "symbol": "6060",
+    "yf_symbol": "6060.SR",
+    "name": "الشرقية للتنمية"
+  },
+  "6070": {
+    "symbol": "6070",
+    "yf_symbol": "6070.SR",
+    "name": "الجوف"
+  },
+  "6090": {
+    "symbol": "6090",
+    "yf_symbol": "6090.SR",
+    "name": "جازادكو"
+  },
+  "7010": {
+    "symbol": "7010",
+    "yf_symbol": "7010.SR",
+    "name": "اس تي سي"
+  },
+  "7020": {
+    "symbol": "7020",
+    "yf_symbol": "7020.SR",
+    "name": "إتحاد إتصالات"
+  },
+  "7030": {
+    "symbol": "7030",
+    "yf_symbol": "7030.SR",
+    "name": "زين السعودية"
+  },
+  "7040": {
+    "symbol": "7040",
+    "yf_symbol": "7040.SR",
+    "name": "قو للإتصالات"
+  },
+  "7200": {
+    "symbol": "7200",
+    "yf_symbol": "7200.SR",
+    "name": "ام آي اس"
+  },
+  "7201": {
+    "symbol": "7201",
+    "yf_symbol": "7201.SR",
+    "name": "بحر العرب"
+  },
+  "7202": {
+    "symbol": "7202",
+    "yf_symbol": "7202.SR",
+    "name": "سلوشنز"
+  },
+  "7203": {
+    "symbol": "7203",
+    "yf_symbol": "7203.SR",
+    "name": "علم"
+  },
+  "7204": {
+    "symbol": "7204",
+    "yf_symbol": "7204.SR",
+    "name": "توبي"
+  },
+  "7211": {
+    "symbol": "7211",
+    "yf_symbol": "7211.SR",
+    "name": "عزم"
+  },
+  "8010": {
+    "symbol": "8010",
+    "yf_symbol": "8010.SR",
+    "name": "التعاونية"
+  },
+  "8012": {
+    "symbol": "8012",
+    "yf_symbol": "8012.SR",
+    "name": "جزيرة تكافل"
+  },
+  "8020": {
+    "symbol": "8020",
+    "yf_symbol": "8020.SR",
+    "name": "ملاذ للتأمين"
+  },
+  "8030": {
+    "symbol": "8030",
+    "yf_symbol": "8030.SR",
+    "name": "ميدغلف للتأمين"
+  },
+  "8040": {
+    "symbol": "8040",
+    "yf_symbol": "8040.SR",
+    "name": "متكاملة"
+  },
+  "8050": {
+    "symbol": "8050",
+    "yf_symbol": "8050.SR",
+    "name": "سلامة"
+  },
+  "8060": {
+    "symbol": "8060",
+    "yf_symbol": "8060.SR",
+    "name": "ولاء"
+  },
+  "8070": {
+    "symbol": "8070",
+    "yf_symbol": "8070.SR",
+    "name": "الدرع العربي"
+  },
+  "8100": {
+    "symbol": "8100",
+    "yf_symbol": "8100.SR",
+    "name": "سايكو"
+  },
+  "8120": {
+    "symbol": "8120",
+    "yf_symbol": "8120.SR",
+    "name": "إتحاد الخليج الأهلية"
+  },
+  "8150": {
+    "symbol": "8150",
+    "yf_symbol": "8150.SR",
+    "name": "أسيج"
+  },
+  "8160": {
+    "symbol": "8160",
+    "yf_symbol": "8160.SR",
+    "name": "التأمين العربية"
+  },
+  "8170": {
+    "symbol": "8170",
+    "yf_symbol": "8170.SR",
+    "name": "الاتحاد"
+  },
+  "8180": {
+    "symbol": "8180",
+    "yf_symbol": "8180.SR",
+    "name": "الصقر للتأمين"
+  },
+  "8190": {
+    "symbol": "8190",
+    "yf_symbol": "8190.SR",
+    "name": "المتحدة للتأمين"
+  },
+  "8200": {
+    "symbol": "8200",
+    "yf_symbol": "8200.SR",
+    "name": "الإعادة السعودية"
+  },
+  "8210": {
+    "symbol": "8210",
+    "yf_symbol": "8210.SR",
+    "name": "بوبا العربية"
+  },
+  "8230": {
+    "symbol": "8230",
+    "yf_symbol": "8230.SR",
+    "name": "تكافل الراجحي"
+  },
+  "8240": {
+    "symbol": "8240",
+    "yf_symbol": "8240.SR",
+    "name": "تْشب"
+  },
+  "8250": {
+    "symbol": "8250",
+    "yf_symbol": "8250.SR",
+    "name": "جي آي جي"
+  },
+  "8260": {
+    "symbol": "8260",
+    "yf_symbol": "8260.SR",
+    "name": "الخليجية العامة"
+  },
+  "8280": {
+    "symbol": "8280",
+    "yf_symbol": "8280.SR",
+    "name": "ليفا"
+  },
+  "8300": {
+    "symbol": "8300",
+    "yf_symbol": "8300.SR",
+    "name": "الوطنية"
+  },
+  "8310": {
+    "symbol": "8310",
+    "yf_symbol": "8310.SR",
+    "name": "أمانة للتأمين"
+  },
+  "8311": {
+    "symbol": "8311",
+    "yf_symbol": "8311.SR",
+    "name": "عناية"
+  },
+  "8313": {
+    "symbol": "8313",
+    "yf_symbol": "8313.SR",
+    "name": "رسن"
+  },
+  "9300": {
+    "symbol": "9300",
+    "yf_symbol": "9300.SR",
+    "name": "Al Waha REIT Fund"
+  },
+  "9510": {
+    "symbol": "9510",
+    "yf_symbol": "9510.SR",
+    "name": "National Building and Market Ltd."
+  },
+  "9513": {
+    "symbol": "9513",
+    "yf_symbol": "9513.SR",
+    "name": "Watani Iron & Steel Co."
+  },
+  "9514": {
+    "symbol": "9514",
+    "yf_symbol": "9514.SR",
+    "name": "Mohammed Hasan Al Naqool Sons Company"
+  },
+  "9515": {
+    "symbol": "9515",
+    "yf_symbol": "9515.SR",
+    "name": "Fesh Fash Snack Food Products Co."
+  },
+  "9516": {
+    "symbol": "9516",
+    "yf_symbol": "9516.SR",
+    "name": "Natural Gas Distribution Co."
+  },
+  "9517": {
+    "symbol": "9517",
+    "yf_symbol": "9517.SR",
+    "name": "Mobi Industry Co. Ltd."
+  },
+  "9518": {
+    "symbol": "9518",
+    "yf_symbol": "9518.SR",
+    "name": "Canadian Medical Center Co."
+  },
+  "9519": {
+    "symbol": "9519",
+    "yf_symbol": "9519.SR",
+    "name": "Banan Real Estate Co."
+  },
+  "9521": {
+    "symbol": "9521",
+    "yf_symbol": "9521.SR",
+    "name": "Enma Al-Rawabi Company"
+  },
+  "9522": {
+    "symbol": "9522",
+    "yf_symbol": "9522.SR",
+    "name": "Al Hasoob Co."
+  },
+  "9523": {
+    "symbol": "9523",
+    "yf_symbol": "9523.SR",
+    "name": "Group Five Pipe Saudi Ltd."
+  },
+  "9524": {
+    "symbol": "9524",
+    "yf_symbol": "9524.SR",
+    "name": "Advance International Communications Company Limited"
+  },
+  "9525": {
+    "symbol": "9525",
+    "yf_symbol": "9525.SR",
+    "name": "Alwasail Industrial Co."
+  },
+  "9526": {
+    "symbol": "9526",
+    "yf_symbol": "9526.SR",
+    "name": "Jahez International Company for Information Systems Technology"
+  },
+  "9527": {
+    "symbol": "9527",
+    "yf_symbol": "9527.SR",
+    "name": "Ame Company for Medical Supplies"
+  },
+  "9528": {
+    "symbol": "9528",
+    "yf_symbol": "9528.SR",
+    "name": "Gas Arabian Services Co. Ltd."
+  },
+  "9529": {
+    "symbol": "9529",
+    "yf_symbol": "9529.SR",
+    "name": "Raoom Trading Co."
+  },
+  "9530": {
+    "symbol": "9530",
+    "yf_symbol": "9530.SR",
+    "name": "Arabian International Healthcare Holding Company"
+  },
+  "9531": {
+    "symbol": "9531",
+    "yf_symbol": "9531.SR",
+    "name": "Obeikan Glass Company"
+  },
+  "9532": {
+    "symbol": "9532",
+    "yf_symbol": "9532.SR",
+    "name": "Al Jouf Mineral Water Bottling Co. Ltd."
+  },
+  "9533": {
+    "symbol": "9533",
+    "yf_symbol": "9533.SR",
+    "name": "Saudi Parts Center Co."
+  },
+  "9534": {
+    "symbol": "9534",
+    "yf_symbol": "9534.SR",
+    "name": "Saudi Azm Co. for Communication and Information Technology"
+  },
+  "9535": {
+    "symbol": "9535",
+    "yf_symbol": "9535.SR",
+    "name": "Ladun Investment Company SJSC"
+  },
+  "9536": {
+    "symbol": "9536",
+    "yf_symbol": "9536.SR",
+    "name": "Arabian Food & Dairy Factories Co."
+  },
+  "9537": {
+    "symbol": "9537",
+    "yf_symbol": "9537.SR",
+    "name": "Amwaj International Co."
+  },
+  "9538": {
+    "symbol": "9538",
+    "yf_symbol": "9538.SR",
+    "name": "Naseej for Technology Co."
+  },
+  "9539": {
+    "symbol": "9539",
+    "yf_symbol": "9539.SR",
+    "name": "Aqaseem Factory for Chemical"
+  },
+  "9540": {
+    "symbol": "9540",
+    "yf_symbol": "9540.SR",
+    "name": "National Environmental Recycling Co."
+  },
+  "9541": {
+    "symbol": "9541",
+    "yf_symbol": "9541.SR",
+    "name": "Academy of Learning Company"
+  },
+  "9542": {
+    "symbol": "9542",
+    "yf_symbol": "9542.SR",
+    "name": "Care International Company"
+  },
+  "9543": {
+    "symbol": "9543",
+    "yf_symbol": "9543.SR",
+    "name": "Saudi Networkers Services Co."
+  },
+  "9544": {
+    "symbol": "9544",
+    "yf_symbol": "9544.SR",
+    "name": "Future Care Trading Company"
+  },
+  "9545": {
+    "symbol": "9545",
+    "yf_symbol": "9545.SR",
+    "name": "International Human Resources Company"
+  },
+  "9546": {
+    "symbol": "9546",
+    "yf_symbol": "9546.SR",
+    "name": "Naba AlSaha Medical Services Co."
+  },
+  "9547": {
+    "symbol": "9547",
+    "yf_symbol": "9547.SR",
+    "name": "Rawasi Albina Investment Co."
+  },
+  "9548": {
+    "symbol": "9548",
+    "yf_symbol": "9548.SR",
+    "name": "Arabian Plastic Industrial Co."
+  },
+  "9549": {
+    "symbol": "9549",
+    "yf_symbol": "9549.SR",
+    "name": "Abdulaziz & Mansour Ibrahim Company"
+  },
+  "9550": {
+    "symbol": "9550",
+    "yf_symbol": "9550.SR",
+    "name": "Sure Global Tech Company"
+  },
+  "9551": {
+    "symbol": "9551",
+    "yf_symbol": "9551.SR",
+    "name": "Knowledge Tower Trading Co."
+  },
+  "9552": {
+    "symbol": "9552",
+    "yf_symbol": "9552.SR",
+    "name": "Saudi Top for Trading Co."
+  },
+  "9553": {
+    "symbol": "9553",
+    "yf_symbol": "9553.SR",
+    "name": "Molan Steel Co."
+  },
+  "9555": {
+    "symbol": "9555",
+    "yf_symbol": "9555.SR",
+    "name": "Leen Alkhair Trading Co."
+  },
+  "9556": {
+    "symbol": "9556",
+    "yf_symbol": "9556.SR",
+    "name": "Nofoth Food Products Co."
+  },
+  "9557": {
+    "symbol": "9557",
+    "yf_symbol": "9557.SR",
+    "name": "Edarat Communication & Information Technology Co."
+  },
+  "9558": {
+    "symbol": "9558",
+    "yf_symbol": "9558.SR",
+    "name": "Alqemam for Computer Systems"
+  },
+  "9559": {
+    "symbol": "9559",
+    "yf_symbol": "9559.SR",
+    "name": "Balady Poultry Co."
+  },
+  "9560": {
+    "symbol": "9560",
+    "yf_symbol": "9560.SR",
+    "name": "Waja Co."
+  },
+  "9561": {
+    "symbol": "9561",
+    "yf_symbol": "9561.SR",
+    "name": "Knowledge Net Co."
+  },
+  "9562": {
+    "symbol": "9562",
+    "yf_symbol": "9562.SR",
+    "name": "Foods Gate Co."
+  },
+  "9563": {
+    "symbol": "9563",
+    "yf_symbol": "9563.SR",
+    "name": "Bena Steel Industries Co."
+  },
+  "9564": {
+    "symbol": "9564",
+    "yf_symbol": "9564.SR",
+    "name": "Horizon Food Factory Co. Ltd."
+  },
+  "9565": {
+    "symbol": "9565",
+    "yf_symbol": "9565.SR",
+    "name": "Meyar Co."
+  },
+  "9566": {
+    "symbol": "9566",
+    "yf_symbol": "9566.SR",
+    "name": "Saudi Lime Industries Co."
+  },
+  "9567": {
+    "symbol": "9567",
+    "yf_symbol": "9567.SR",
+    "name": "Ghida AlSultan for Fast Food Co."
+  },
+  "9568": {
+    "symbol": "9568",
+    "yf_symbol": "9568.SR",
+    "name": "Mayar Holding Co. Ltd."
+  },
+  "9569": {
+    "symbol": "9569",
+    "yf_symbol": "9569.SR",
+    "name": "Almuneef Co. for Trading and Industry"
+  },
+  "9570": {
+    "symbol": "9570",
+    "yf_symbol": "9570.SR",
+    "name": "TAM Development Co."
+  },
+  "9571": {
+    "symbol": "9571",
+    "yf_symbol": "9571.SR",
+    "name": "Munawla Cargo Co. Ltd."
+  },
+  "9572": {
+    "symbol": "9572",
+    "yf_symbol": "9572.SR",
+    "name": "Al Razi Medical Co."
+  },
+  "9574": {
+    "symbol": "9574",
+    "yf_symbol": "9574.SR",
+    "name": "Professional Medical Expertise Inc."
+  },
+  "9575": {
+    "symbol": "9575",
+    "yf_symbol": "9575.SR",
+    "name": "Marble Design Factory Co."
+  },
+  "9576": {
+    "symbol": "9576",
+    "yf_symbol": "9576.SR",
+    "name": "Paper Home Co."
+  },
+  "9577": {
+    "symbol": "9577",
+    "yf_symbol": "9577.SR",
+    "name": "Dar Al Markabah for Renting Cars Co."
+  },
+  "9578": {
+    "symbol": "9578",
+    "yf_symbol": "9578.SR",
+    "name": "Atlas Elevators General Trading Co."
+  },
+  "9579": {
+    "symbol": "9579",
+    "yf_symbol": "9579.SR",
+    "name": "Intelligent Oud Company for Trading"
+  },
+  "9580": {
+    "symbol": "9580",
+    "yf_symbol": "9580.SR",
+    "name": "Alrashid Industrial Co."
+  },
+  "9581": {
+    "symbol": "9581",
+    "yf_symbol": "9581.SR",
+    "name": "Clean Life Co."
+  },
+  "9583": {
+    "symbol": "9583",
+    "yf_symbol": "9583.SR",
+    "name": "United Mining Industries Co."
+  },
+  "9584": {
+    "symbol": "9584",
+    "yf_symbol": "9584.SR",
+    "name": "Riyal Investment & Development Co."
+  },
+  "9585": {
+    "symbol": "9585",
+    "yf_symbol": "9585.SR",
+    "name": "Mulkia Investment Co."
+  },
+  "9586": {
+    "symbol": "9586",
+    "yf_symbol": "9586.SR",
+    "name": "Osool & Bakheet Investment Company"
+  },
+  "9587": {
+    "symbol": "9587",
+    "yf_symbol": "9587.SR",
+    "name": "Lana Medical Co."
+  },
+  "9588": {
+    "symbol": "9588",
+    "yf_symbol": "9588.SR",
+    "name": "Riyadh Steel Company"
+  },
+  "9589": {
+    "symbol": "9589",
+    "yf_symbol": "9589.SR",
+    "name": "Fad International Co."
+  },
+  "9590": {
+    "symbol": "9590",
+    "yf_symbol": "9590.SR",
+    "name": "Armah Sports Co."
+  },
+  "9591": {
+    "symbol": "9591",
+    "yf_symbol": "9591.SR",
+    "name": "View United Real Estate Development Co."
+  },
+  "9592": {
+    "symbol": "9592",
+    "yf_symbol": "9592.SR",
+    "name": "Almujtama Alraida Medical Co."
+  },
+  "9593": {
+    "symbol": "9593",
+    "yf_symbol": "9593.SR",
+    "name": "Pan Gulf Marketing Co."
+  },
+  "9594": {
+    "symbol": "9594",
+    "yf_symbol": "9594.SR",
+    "name": "Al-Modawat Specialized Medical Company"
+  },
+  "9595": {
+    "symbol": "9595",
+    "yf_symbol": "9595.SR",
+    "name": "WSM Information Technology Inc."
+  },
+  "9596": {
+    "symbol": "9596",
+    "yf_symbol": "9596.SR",
+    "name": "Quara Finance Co."
+  },
+  "9597": {
+    "symbol": "9597",
+    "yf_symbol": "9597.SR",
+    "name": "Leaf Global Environmental Societas Europaea"
+  },
+  "9598": {
+    "symbol": "9598",
+    "yf_symbol": "9598.SR",
+    "name": "Al-Muhafaza Education Co."
+  },
+  "9599": {
+    "symbol": "9599",
+    "yf_symbol": "9599.SR",
+    "name": "Taqat Mineral Trading Co."
+  },
+  "9600": {
+    "symbol": "9600",
+    "yf_symbol": "9600.SR",
+    "name": "Qomel Co."
+  },
+  "9601": {
+    "symbol": "9601",
+    "yf_symbol": "9601.SR",
+    "name": "Mohammed Hadi Al Rasheed Co."
+  },
+  "9602": {
+    "symbol": "9602",
+    "yf_symbol": "9602.SR",
+    "name": "Yaqeen Capital Co."
+  },
+  "9603": {
+    "symbol": "9603",
+    "yf_symbol": "9603.SR",
+    "name": "Horizon Educational Co."
+  },
+  "9604": {
+    "symbol": "9604",
+    "yf_symbol": "9604.SR",
+    "name": "Miral Dental Clinics Co."
+  },
+  "9605": {
+    "symbol": "9605",
+    "yf_symbol": "9605.SR",
+    "name": "Neft Alsharq Company for Chemical"
+  },
+  "9606": {
+    "symbol": "9606",
+    "yf_symbol": "9606.SR",
+    "name": "Tharwah Corporation"
+  },
+  "9607": {
+    "symbol": "9607",
+    "yf_symbol": "9607.SR",
+    "name": "ASG Plastic Factory Co."
+  },
+  "9608": {
+    "symbol": "9608",
+    "yf_symbol": "9608.SR",
+    "name": "Al Ashghal Al Moysra Co."
+  },
+  "9609": {
+    "symbol": "9609",
+    "yf_symbol": "9609.SR",
+    "name": "Naas Petrol Factory Co."
+  },
+  "9610": {
+    "symbol": "9610",
+    "yf_symbol": "9610.SR",
+    "name": "First Avenue Real Estate Development Ltd."
+  },
+  "9611": {
+    "symbol": "9611",
+    "yf_symbol": "9611.SR",
+    "name": "Arabian United Float Glass Company"
+  },
+  "9612": {
+    "symbol": "9612",
+    "yf_symbol": "9612.SR",
+    "name": "Sama Healthy Water Factory Co."
+  },
+  "9613": {
+    "symbol": "9613",
+    "yf_symbol": "9613.SR",
+    "name": "Shalfa Facilities Management Ltd."
+  },
+  "9614": {
+    "symbol": "9614",
+    "yf_symbol": "9614.SR",
+    "name": "PURITY for Information Technology Inc."
+  },
+  "9615": {
+    "symbol": "9615",
+    "yf_symbol": "9615.SR",
+    "name": "Mufeed Co."
+  },
+  "9616": {
+    "symbol": "9616",
+    "yf_symbol": "9616.SR",
+    "name": "Jana Medical Co."
+  },
+  "9617": {
+    "symbol": "9617",
+    "yf_symbol": "9617.SR",
+    "name": "Arabica Star Co."
+  },
+  "9618": {
+    "symbol": "9618",
+    "yf_symbol": "9618.SR",
+    "name": "Al-Fakhira Men's Tailoring Company"
+  },
+  "9619": {
+    "symbol": "9619",
+    "yf_symbol": "9619.SR",
+    "name": "Multi Business Group Inc."
+  },
+  "9620": {
+    "symbol": "9620",
+    "yf_symbol": "9620.SR",
+    "name": "Balsam Al Ofoq Medical"
+  },
+  "9621": {
+    "symbol": "9621",
+    "yf_symbol": "9621.SR",
+    "name": "Digital Research Co."
+  },
+  "9622": {
+    "symbol": "9622",
+    "yf_symbol": "9622.SR",
+    "name": "Shmoh Almadi Co."
+  },
+  "9623": {
+    "symbol": "9623",
+    "yf_symbol": "9623.SR",
+    "name": "Al Battal Factory for Chemical Industries Company"
+  },
+  "9624": {
+    "symbol": "9624",
+    "yf_symbol": "9624.SR",
+    "name": "Al Shehili Co."
+  },
+  "9625": {
+    "symbol": "9625",
+    "yf_symbol": "9625.SR",
+    "name": "Itmam Consulting Co."
+  },
+  "9626": {
+    "symbol": "9626",
+    "yf_symbol": "9626.SR",
+    "name": "Basma Adeem Medical Co."
+  },
+  "9627": {
+    "symbol": "9627",
+    "yf_symbol": "9627.SR",
+    "name": "Twareat Medical Care Co."
+  },
+  "9628": {
+    "symbol": "9628",
+    "yf_symbol": "9628.SR",
+    "name": "Lamasat Co."
+  },
+  "9630": {
+    "symbol": "9630",
+    "yf_symbol": "9630.SR",
+    "name": "Ratio Specialty Co."
+  },
+  "9631": {
+    "symbol": "9631",
+    "yf_symbol": "9631.SR",
+    "name": "Hedab Alkhaleej Trading Company"
+  },
+  "9632": {
+    "symbol": "9632",
+    "yf_symbol": "9632.SR",
+    "name": "Future Vision for Health Transportation Inc."
+  },
+  "9633": {
+    "symbol": "9633",
+    "yf_symbol": "9633.SR",
+    "name": "Service Equipment Co."
+  },
+  "9634": {
+    "symbol": "9634",
+    "yf_symbol": "9634.SR",
+    "name": "Adeer Real Estate Co."
+  },
+  "9635": {
+    "symbol": "9635",
+    "yf_symbol": "9635.SR",
+    "name": "Dkhoun National Trading Co."
+  },
+  "9636": {
+    "symbol": "9636",
+    "yf_symbol": "9636.SR",
+    "name": "Al Kuzama Trading Co."
+  },
+  "9637": {
+    "symbol": "9637",
+    "yf_symbol": "9637.SR",
+    "name": "Axelerated Solutions for Inf Inc."
+  },
+  "9639": {
+    "symbol": "9639",
+    "yf_symbol": "9639.SR",
+    "name": "Anmat Tech for Trading Co."
+  },
+  "9640": {
+    "symbol": "9640",
+    "yf_symbol": "9640.SR",
+    "name": "Asas Makeen Real Estate Development"
+  },
+  "9641": {
+    "symbol": "9641",
+    "yf_symbol": "9641.SR",
+    "name": "Hawyia Auctions Company"
+  },
+  "9642": {
+    "symbol": "9642",
+    "yf_symbol": "9642.SR",
+    "name": "Time Entertainment Co."
+  },
+  "9644": {
+    "symbol": "9644",
+    "yf_symbol": "9644.SR",
+    "name": "Nafoods Group Joint Stock Company"
+  },
+  "9645": {
+    "symbol": "9645",
+    "yf_symbol": "9645.SR",
+    "name": "National Signage Industrial Company"
+  },
+  "9647": {
+    "symbol": "9647",
+    "yf_symbol": "9647.SR",
+    "name": "9647"
+  },
+  "9648": {
+    "symbol": "9648",
+    "yf_symbol": "9648.SR",
+    "name": "Hamad Mohammed Bin Saedan Real Estate Company"
+  },
+  "9649": {
+    "symbol": "9649",
+    "yf_symbol": "9649.SR",
+    "name": "Jamjoom Fashion Trading Co."
+  },
+  "9650": {
+    "symbol": "9650",
+    "yf_symbol": "9650.SR",
+    "name": "Sahat Almajd Trading Co."
+  },
+  "9651": {
+    "symbol": "9651",
+    "yf_symbol": "9651.SR",
+    "name": "9651"
+  },
+  "9653": {
+    "symbol": "9653",
+    "yf_symbol": "9653.SR",
+    "name": "Khaled Dhafer & Brothers for Logistics Services Co."
+  },
+  "TASI": {
+    "symbol": "TASI",
+    "yf_symbol": "^TASI.SR",
+    "name": "المؤشر العام (تاسي)"
+  },
+  "4700": {
+    "symbol": "4700",
+    "yf_symbol": "4700.SR",
+    "name": "الخبير للدخل"
+  },
+  "4701": {
+    "symbol": "4701",
+    "yf_symbol": "4701.SR",
+    "name": "الخبير للنمو والدخل"
+  },
+  "4702": {
+    "symbol": "4702",
+    "yf_symbol": "4702.SR",
+    "name": "الخبير للدخل 2030"
+  },
+  "4703": {
+    "symbol": "4703",
+    "yf_symbol": "4703.SR",
+    "name": "سدكو متعدد الأصول"
+  },
+  "9400": {
+    "symbol": "9400",
+    "yf_symbol": "9400.SR",
+    "name": "صندوق يقين 30"
+  },
+  "9401": {
+    "symbol": "9401",
+    "yf_symbol": "9401.SR",
+    "name": "صندوق يقين للبتروكيماويات"
+  },
+  "9402": {
+    "symbol": "9402",
+    "yf_symbol": "9402.SR",
+    "name": "صندوق الأول للاستثمار الكمي المتداول"
+  },
+  "9403": {
+    "symbol": "9403",
+    "yf_symbol": "9403.SR",
+    "name": "صندوق البلاد للصكوك السيادية"
+  },
+  "9404": {
+    "symbol": "9404",
+    "yf_symbol": "9404.SR",
+    "name": "صندوق الإنماء للصكوك الحكومية"
+  },
+  "9405": {
+    "symbol": "9405",
+    "yf_symbol": "9405.SR",
+    "name": "صندوق البلاد للذهب"
+  },
+  "9406": {
+    "symbol": "9406",
+    "yf_symbol": "9406.SR",
+    "name": "صندوق البلاد الأمريكي"
+  },
+  "9407": {
+    "symbol": "9407",
+    "yf_symbol": "9407.SR",
+    "name": "صندوق البلاد التقني الأمريكي"
+  },
+  "9408": {
+    "symbol": "9408",
+    "yf_symbol": "9408.SR",
+    "name": "صندوق البلاد للنمو السعودي"
+  },
+  "9409": {
+    "symbol": "9409",
+    "yf_symbol": "9409.SR",
+    "name": "صندوق يقين إي إس جي"
+  },
+  "9410": {
+    "symbol": "9410",
+    "yf_symbol": "9410.SR",
+    "name": "صندوق البلاد هونج كونج الصين"
+  },
+  "9411": {
+    "symbol": "9411",
+    "yf_symbol": "9411.SR",
+    "name": "صندوق الأول للاستثمار هونج كونج"
+  },
+  "9412": {
+    "symbol": "9412",
+    "yf_symbol": "9412.SR",
+    "name": "البلاد إم إس سي آي المتداول للأسهم السعودية"
+  }
+}
