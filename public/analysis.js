@@ -107,6 +107,42 @@ function updateView(mode) {
             tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">لا توجد أسهم في منطقة تشبع بيعي حالياً</td></tr>';
             return;
         }
+    } else if (mode === 'reversal') {
+        titleEl.textContent = 'بداية انعكاس إيجابي 🔄';
+        // Strategy: MACD > Signal (Crossover) + RSI < 50 (Early entry, not yet overbought)
+        sortedList = allStocksData.filter(s => {
+            if (!s.macd || !s.macd_signal) return false;
+            return (s.macd > s.macd_signal) && (s.rsi_14 && s.rsi_14 < 60);
+        }).sort((a, b) => (b.macd_hist || 0) - (a.macd_hist || 0)).slice(0, 10);
+
+        if (sortedList.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">لا توجد إشارات انعكاس واضحة حالياً</td></tr>';
+            return;
+        }
+
+    } else if (mode === 'breakout') {
+        titleEl.textContent = 'اختراق قوي (سيولة) 💥';
+        // Strategy: Change > 2% + Price > SMA20
+        sortedList = allStocksData.filter(s => {
+            return (s.percent > 2.0) && (s.price > s.sma_20);
+        }).sort((a, b) => (b.percent || 0) - (a.percent || 0)).slice(0, 10);
+
+        if (sortedList.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">لا توجد اختراقات قوية اليوم</td></tr>';
+            return;
+        }
+
+    } else if (mode === 'overbought') {
+        titleEl.textContent = 'تضخم شرائي (حذر) ⚠️';
+        // Strategy: RSI > 70
+        sortedList = allStocksData.filter(s => {
+            return s.rsi_14 && s.rsi_14 > 70;
+        }).sort((a, b) => (b.rsi_14 || 0) - (a.rsi_14 || 0)).slice(0, 10);
+
+        if (sortedList.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">السوق صحي (لا يوجد تضخم شرائي)</td></tr>';
+            return;
+        }
     }
 
     renderTable(sortedList);
