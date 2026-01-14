@@ -4,6 +4,7 @@ import yfinance as yf
 from datetime import datetime
 import sys
 import os
+import json
 
 # Fix for SSL if needed
 os.environ["CURL_CA_BUNDLE"] = r"c:\projects\swm\cacert.pem"
@@ -11,11 +12,17 @@ os.environ["CURL_CA_BUNDLE"] = r"c:\projects\swm\cacert.pem"
 # Initialize Firebase
 if not firebase_admin._apps:
     try:
-        cred = credentials.Certificate('serviceAccountKey.json')
+        # Check if running in GitHub Actions (env var) or local
+        if os.getenv('SERVICE_ACCOUNT_KEY'):
+             cred = credentials.Certificate(json.loads(os.getenv('SERVICE_ACCOUNT_KEY')))
+        else:
+            cred = credentials.Certificate('serviceAccountKey.json')
+            
         firebase_admin.initialize_app(cred)
     except Exception as e:
         print(f"Error initializing Firebase: {e}")
-        sys.exit(1)
+        #sys.exit(1) # Don't strict exit, maybe fallback
+        pass
 
 db = firestore.client()
 

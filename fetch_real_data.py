@@ -21,7 +21,10 @@ os.environ["CURL_CA_BUNDLE"] = r"c:\projects\swm\cacert.pem"
 
 # 1. Initialize Firebase
 if not firebase_admin._apps:
-    cred = credentials.Certificate('serviceAccountKey.json')
+    if os.getenv('SERVICE_ACCOUNT_KEY'):
+        cred = credentials.Certificate(json.loads(os.getenv('SERVICE_ACCOUNT_KEY')))
+    else:
+        cred = credentials.Certificate('serviceAccountKey.json')
     firebase_admin.initialize_app(cred)
 db = firestore.client()
 
