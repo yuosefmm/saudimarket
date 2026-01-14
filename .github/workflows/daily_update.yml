@@ -33,8 +33,8 @@ jobs:
       run: |
         echo "$SERVICE_ACCOUNT_KEY" > serviceAccountKey.json
 
-    - name: Fetch Data (Fetch Phase)
-      run: python fetch_to_json.py
+    - name: Update Market Data (Smart Filters + History)
+      run: python fetch_real_data.py
 
-    - name: Upload Data (Upload Phase)
-      run: python upload_from_json.py
+    - name: Fetch Market News
+      run: python fetch_news.py
