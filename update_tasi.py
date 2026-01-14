@@ -13,7 +13,9 @@ def update_tasi():
     # Initialize Firebase
     try:
         # Check if running in GitHub Actions (env var) or local
-        if os.getenv('FIREBASE_SERVICE_ACCOUNT'):
+        if os.getenv('SERVICE_ACCOUNT_KEY'):
+             cred = credentials.Certificate(json.loads(os.getenv('SERVICE_ACCOUNT_KEY')))
+        elif os.getenv('FIREBASE_SERVICE_ACCOUNT'):
             cred = credentials.Certificate(json.loads(os.getenv('FIREBASE_SERVICE_ACCOUNT')))
         elif os.path.exists('serviceAccountKey.json'):
              cred = credentials.Certificate('serviceAccountKey.json')
