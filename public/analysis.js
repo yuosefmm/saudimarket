@@ -8,90 +8,94 @@ const firebaseConfig = {
     measurementId: "G-6WZ1L6P61E"
 };
 
-// Initialize Firebase
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
-// ... Wait, I'll defer writing full content until I peek at app.js config block.
-// But mostly I can just use `firebase.firestore()` if already initialized? 
-// No, each page reload clears state.
-// Let's assume I need to copy the config.
-
-console.log("Analysis Page Loaded");
+let allStocksData = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // Look for Config in app.js (Placeholder)
-        // For now, let's assume we can just fetch.
-
         const db = firebase.firestore();
+        console.log("Fetching Analysis Data...");
 
-        // Fetch All Stocks
         const snapshot = await db.collection('stocks').get();
-        const stocks = [];
+        allStocksData = [];
         snapshot.forEach(doc => {
-            stocks.push(doc.data());
+            allStocksData.push(doc.data());
         });
 
-        // Process Data
-        processGainers(stocks);
-        processLosers(stocks);
-        processVolume(stocks);
+        // Initial Render (Matches Default Value 'gainers')
+        updateView('gainers');
+
+        // Listener
+        const selector = document.getElementById('analysis-selector');
+        if (selector) {
+            selector.addEventListener('change', (e) => {
+                updateView(e.target.value);
+            });
+        }
 
     } catch (e) {
         console.error("Error loading analysis data:", e);
-        // Maybe config missing
-        document.getElementById('gainers-list').innerHTML = '<li class="stock-item">Error loading data. Config missing?</li>';
+        document.getElementById('analysis-table-body').innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">Error loading data.</td></tr>';
     }
 });
 
-function processGainers(stocks) {
-    // Sort by percent desc
-    const sorted = [...stocks].sort((a, b) => (b.percent || 0) - (a.percent || 0));
-    const top5 = sorted.slice(0, 5);
-    renderList('gainers-list', top5);
+function updateView(mode) {
+    const tableBody = document.getElementById('analysis-table-body');
+    const titleEl = document.getElementById('table-title');
+
+    if (!tableBody) return;
+
+    let sortedList = [];
+
+    // Logic
+    if (mode === 'gainers') {
+        titleEl.textContent = 'الأكثر ارتفاعاً 🚀';
+        sortedList = [...allStocksData].sort((a, b) => (b.percent || 0) - (a.percent || 0)).slice(0, 20); // Top 20
+    } else if (mode === 'losers') {
+        titleEl.textContent = 'الأكثر انخفاضاً 🔻';
+        sortedList = [...allStocksData].sort((a, b) => (a.percent || 0) - (b.percent || 0)).slice(0, 20); // Bottom 20
+    } else if (mode === 'volume') {
+        titleEl.textContent = 'الأعلى سيولة 💰 (مقدرة)';
+        // Sort by Volume (if available) or mock
+        sortedList = [...allStocksData].filter(s => s.volume).sort((a, b) => (b.volume || 0) - (a.volume || 0)).slice(0, 20);
+        if (sortedList.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">بيانات السيولة غير متوفرة حالياً</td></tr>';
+            return;
+        }
+    }
+
+    renderTable(sortedList);
 }
 
-function processLosers(stocks) {
-    // Sort by percent asc
-    const sorted = [...stocks].sort((a, b) => (a.percent || 0) - (b.percent || 0));
-    const bottom5 = sorted.slice(0, 5);
-    renderList('losers-list', bottom5);
-}
-
-function processVolume(stocks) {
-    // Sort by volume? We might not have 'volume' in the stock header document?
-    // In update_tasi.py we update 'price', 'change', 'percent', 'year_high', 'year_low'.
-    // We DO NOT seem to update 'volume' in the header document in update_tasi.py?
-    // Let's check update_tasi.py again.
-    // Line 73: update_data = { price, change, percent, ... }
-    // NO VOLUME.
-    // We can't do Volume Leaderboard yet without modifying update script.
-    // So I'll put "Not Available" or try validation.
-
-    // Temporary: Use Price as proxy? No.
-    // Render empty.
-    document.getElementById('volume-list').innerHTML = '<li class="stock-item">Not available (Data Pending)</li>';
-}
-
-function renderList(elementId, list) {
-    const container = document.getElementById(elementId);
-    container.innerHTML = '';
+function renderTable(list) {
+    const tableBody = document.getElementById('analysis-table-body');
+    tableBody.innerHTML = '';
 
     list.forEach(stock => {
-        const li = document.createElement('li');
-        li.className = 'stock-item';
+        const tr = document.createElement('tr');
+        tr.style.borderBottom = '1px solid rgba(255, 255, 255, 0.05)';
 
         const changeClass = (stock.percent >= 0) ? 'val-up' : 'val-down';
         const sign = (stock.percent > 0) ? '+' : '';
+        const price = stock.price !== undefined ? stock.price.toFixed(2) : '-';
+        const change = stock.change !== undefined ? stock.change.toFixed(2) : '-';
 
-        li.innerHTML = `
-            <span class="stock-name">${stock.name || stock.symbol} <span style="font-size: 0.8em; opacity: 0.7;">(${stock.symbol})</span></span>
-            <span class="stock-price ${changeClass}" style="direction: ltr;">
-                ${sign}${stock.percent ? stock.percent.toFixed(2) : '0.00'}%
-            </span>
+        tr.innerHTML = `
+            <td style="padding: 12px; text-align: right;">
+                <div style="font-weight: 500; color: #fff;">${stock.name || stock.symbol}</div>
+                <div style="font-size: 11px; opacity: 0.6;">${stock.symbol}</div>
+            </td>
+            <td style="padding: 12px; font-family: 'JetBrains Mono';">${price}</td>
+            <td style="padding: 12px; font-family: 'JetBrains Mono';" class="${changeClass}">
+                <span dir="ltr">${sign}${stock.percent ? stock.percent.toFixed(2) : '0.00'}%</span>
+            </td>
+             <td style="padding: 12px; font-family: 'JetBrains Mono';" class="${changeClass}">
+                ${stock.change ? stock.change.toFixed(2) : '0.00'}
+            </td>
         `;
-        container.appendChild(li);
+        tableBody.appendChild(tr);
     });
 }
