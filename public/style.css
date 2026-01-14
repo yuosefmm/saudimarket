@@ -155,7 +155,8 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
+    right: 40px;
+    /* Space for toolbar */
     bottom: 0;
     width: auto;
     height: auto;
@@ -291,7 +292,7 @@ body {
     top: 10px;
     left: 10px;
     /* LTR position, check RTL needs */
-    z-index: 20;
+    z-index: 30;
     display: flex;
     gap: 4px;
     background: var(--bg-panel);
@@ -300,22 +301,22 @@ body {
     border: var(--border-subtle);
 }
 
+/* Legend: Floating info box */
 .chart-legend {
     position: absolute;
-    top: 50px;
-    left: 12px;
-    z-index: 50;
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: #f8fafc;
-    background: rgba(15, 23, 42, 0.95);
-    padding: 8px 12px;
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    top: 10px;
+    /* Aligned with toolbar */
+    right: 120px;
+    z-index: 20;
     pointer-events: none;
-    direction: ltr;
-    min-width: 300px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+    background: rgba(15, 23, 42, 0.1);
+    backdrop-filter: blur(4px);
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    min-width: 180px;
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
 }
 
 .legend-item {
@@ -345,17 +346,135 @@ body {
 }
 
 .control-btn:hover,
-.control-btn.active {
+.control-btn.active,
+.dropdown:hover .dropbtn {
     background: var(--bg-app);
     color: var(--text-primary);
 }
+
+.toolbar-separator {
+    width: 1px;
+    height: 16px;
+    background: var(--border-subtle);
+    margin: 0 4px;
+    align-self: center;
+}
+
+/* Dropdown */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--bg-panel);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.5);
+    border: var(--border-subtle);
+    border-radius: 4px;
+    z-index: 1000;
+    /* High z-index to overlay legend */
+    top: 100%;
+    right: 0;
+    padding: 8px;
+    text-align: right;
+}
+
+.dropdown-content.show {
+    display: block !important;
+}
+
+/* ... existing dropdown styles ... */
+
+
 
 /* RTL Specific Overrides if needed */
 body {
     direction: rtl;
 }
 
-.terminal-grid {
-    /* Swap columns for RTL visual flow if preferred */
-    /* grid-template-columns: 1fr 350px; No, usually sidebar is on one side. Let's stick to the grid definition. */
+/* Side Toolbar */
+.side-toolbar {
+    position: absolute;
+    top: 48px;
+    /* Match header height */
+    right: 0;
+    bottom: 0;
+    width: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 40;
+    pointer-events: auto;
+    background: var(--bg-panel);
+    border-left: var(--border-subtle);
+    padding-top: 50px;
+    /* Push buttons down */
+    align-items: center;
+}
+
+.tool-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.tool-btn:hover {
+    background: var(--bg-app);
+    color: var(--text-accent);
+}
+
+.tool-btn.active {
+    background: #2962FF;
+    /* Distinct Blue */
+    color: #ffffff;
+    border: 1px solid #2962FF;
+}
+
+/* Ensure dropdown items stack */
+.dropdown-content {
+    display: none;
+    flex-direction: column;
+    /* Force vertical stack */
+}
+
+.dropdown-content.show {
+    display: flex !important;
+    /* Use flex to stack */
+}
+
+.dropdown-content label {
+    display: block;
+    width: 100%;
+
+    /* Toast */
+    .toast-msg {
+        position: fixed;
+        top: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #333;
+        color: #fff;
+        padding: 8px 16px;
+        border-radius: 20px;
+        z-index: 9999;
+        font-size: 14px;
+        opacity: 1;
+        transition: opacity 0.5s ease;
+        pointer-events: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    box-sizing: border-box;
 }

@@ -13,6 +13,18 @@ if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
+// Helper: Toast
+window.showToast = (msg) => {
+    const t = document.createElement('div');
+    t.className = 'toast-msg';
+    t.innerText = msg;
+    document.body.appendChild(t);
+    setTimeout(() => {
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 500);
+    }, 2000);
+};
+
 // Global DB Reference
 let db;
 
@@ -44,13 +56,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             // Ensure TASI is at the top
-            if (tasiData) {
+            if (tasiData && tasiData.price > 0) {
                 updateTasiDisplay(tasiData);
                 stocks.unshift(tasiData);
             } else {
-                const dummyTasi = { symbol: 'TASI', name: 'المؤشر العام', price: 12450.20, change: 56.4, percent: 0.45, year_high: 13000, year_low: 11000 };
-                updateTasiDisplay(dummyTasi);
-                stocks.unshift(dummyTasi);
+                // If TASI doc missing OR price invalid (0), use Dummy/Previous Close for display
+                // This ensures the header is never empty "---" if we have partial data
+                const fallbackTasi = tasiData || { symbol: 'TASI', name: 'المؤشر العام', price: 12450.20, change: 0, percent: 0, year_high: 13000, year_low: 11000 };
+                updateTasiDisplay(fallbackTasi);
+                stocks.unshift(fallbackTasi);
             }
 
             allStocks = stocks;
@@ -90,6 +104,231 @@ let chart = null;
 let candleSeries = null;
 let volumeSeries = null;
 let smaSeries = null;
+
+// --- DROPDOWN LOGIC (Global) ---
+window.toggleDropdown = () => {
+    const dropdown = document.getElementById('indicators-dropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('show');
+    }
+};
+
+// Close dropdown when clicking outside
+window.onclick = (event) => {
+    // Check if click occurred inside the toggle button
+    if (!event.target.closest('.dropbtn')) {
+        const dropdowns = document.getElementsByClassName("dropdown-content");
+        for (let i = 0; i < dropdowns.length; i++) {
+            const openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+}
+
+// --- DRAWING MANAGER (Global) ---
+const DrawingManager = {
+    mode: null,
+    trendStart: null,
+    verticalSeries: null,
+    verticalData: [],
+    drawnObjects: [],
+
+    getTimeValue(t) {
+        if (!t) return 0;
+        if (typeof t === 'number') return t;
+        if (typeof t === 'string') return new Date(t).getTime();
+        if (typeof t === 'object') {
+            if (t.year !== undefined && t.month !== undefined && t.day !== undefined) {
+                return new Date(t.year, t.month - 1, t.day).getTime();
+            }
+            // If it's a Date object
+            if (t instanceof Date) return t.getTime();
+        }
+        return 0;
+    },
+
+    start(mode, btnElement) {
+        try {
+            // UI Feedback
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+
+            if (mode === this.mode) {
+                this.mode = null;
+                const container = document.getElementById('main_chart_container');
+                if (container) container.style.cursor = 'default';
+                this.trendStart = null;
+                return;
+            }
+
+            if (btnElement && mode) {
+                btnElement.classList.add('active');
+            }
+
+            this.mode = mode;
+            const container = document.getElementById('main_chart_container');
+            if (container) {
+                if (mode) {
+                    container.style.cursor = 'crosshair';
+                } else {
+                    container.style.cursor = 'default';
+                    this.trendStart = null;
+                }
+            }
+        } catch (e) { console.error(e); }
+    },
+
+    handleClick(param) {
+        if (!this.mode) return;
+
+        try {
+            // Use window.chart / window.candleSeries explicitly if needed, but the global scope vars should work.
+            // Safety check:
+            const targetChart = chart || window.chart;
+            const targetSeries = candleSeries || window.candleSeries;
+
+            if (!targetSeries || !targetChart) return;
+
+            // 1. Robust Time Retrieval
+            let time = param.time;
+            if (!time && param.point) {
+                // Try to get time from coordinate for whitespace
+                time = targetChart.timeScale().coordinateToTime(param.point.x);
+            }
+
+            if (!time || !param.point) return;
+
+            const price = targetSeries.coordinateToPrice(param.point.y);
+
+            // Vertical Line
+            if (this.mode === 'vertical') {
+                if (!this.verticalSeries) {
+                    this.verticalSeries = targetChart.addHistogramSeries({
+                        color: '#f59e0b',
+                        priceFormat: { type: 'custom', formatter: () => '' },
+                        priceScaleId: 'vertical-scales',
+                    });
+                    targetChart.priceScale('vertical-scales').applyOptions({
+                        scaleMargins: { top: 0.1, bottom: 0 },
+                        visible: false,
+                    });
+                    this.drawnObjects.push({ type: 'series', obj: this.verticalSeries, isVertical: true });
+                }
+
+                // Check duplicates using time value
+                const timeVal = this.getTimeValue(time);
+                if (!this.verticalData.find(t => this.getTimeValue(t.time) === timeVal)) {
+                    this.verticalData.push({ time: time, value: 100, color: '#f59e0b' });
+                    // Safe sort
+                    this.verticalData.sort((a, b) => this.getTimeValue(a.time) - this.getTimeValue(b.time));
+                    this.verticalSeries.setData(this.verticalData);
+                }
+                return;
+            }
+
+            // Horizontal Line
+            if (this.mode === 'horizontal') {
+                if (price) {
+                    const line = targetSeries.createPriceLine({
+                        price: price,
+                        color: '#f59e0b',
+                        lineWidth: 2,
+                        lineStyle: 2,
+                        axisLabelVisible: true,
+                        title: 'H-Line',
+                    });
+                    this.drawnObjects.push({ type: 'priceLine', series: targetSeries, obj: line });
+                }
+                return;
+            }
+
+            // Trend Line
+            if (this.mode === 'trend') {
+                if (!this.trendStart) {
+                    this.trendStart = { time: time, price: price };
+                    if (window.showToast) showToast('حدد النقطة الثانية');
+                } else {
+                    let p1 = this.trendStart;
+                    let p2 = { time: time, price: price };
+
+                    // Compare values
+                    const t1 = this.getTimeValue(p1.time);
+                    const t2 = this.getTimeValue(p2.time);
+
+                    if (t1 === t2 && p1.price === p2.price) {
+                        return; // Clicked same spot
+                    }
+
+                    const tSeries = targetChart.addLineSeries({
+                        color: '#f59e0b',
+                        lineWidth: 2,
+                        lineStyle: 0,
+                        crosshairMarkerVisible: false,
+                        lastValueVisible: false,
+                        priceLineVisible: false,
+                        autoscaleInfoProvider: () => null,
+                        title: '',
+                    });
+
+                    let data = [p1, p2];
+
+                    // Sort by time safely
+                    if (t1 > t2) {
+                        data = [p2, p1];
+                    }
+
+                    // Strict LWC check: times cannot be equal for LineSeries
+                    if (this.getTimeValue(data[0].time) === this.getTimeValue(data[1].time)) {
+                        if (window.showToast) showToast('لا يمكن رسم خط عمودي هنا');
+                        // Clean up the empty series we just created?
+                        // Actually LWC returns the series, but it's empty. We should probably remove it.
+                        targetChart.removeSeries(tSeries);
+                        return;
+                    }
+
+                    try {
+                        tSeries.setData(data);
+                        this.drawnObjects.push({ type: 'series', obj: tSeries });
+                        this.trendStart = null;
+                        // Reset cursor
+                        // document.getElementById('main_chart_container').style.cursor = 'default';
+                        // this.mode = null; // Should we stop drawing after one line? Usually users want to draw multiple. 
+                        // Current behavior: keeps tool active. 
+                    } catch (setErr) {
+                        console.error("SetData Error:", setErr);
+                        targetChart.removeSeries(tSeries);
+                        if (window.showToast) showToast('حدث خطأ في الرسم');
+                    }
+                }
+            }
+        } catch (err) {
+            console.error(err);
+            if (window.showToast) showToast('خطأ: ' + err.message);
+        }
+    },
+
+    clear() {
+        this.drawnObjects.forEach(item => {
+            try {
+                if (item.type === 'priceLine') {
+                    item.series.removePriceLine(item.obj);
+                } else if (item.type === 'series') {
+                    const targetChart = chart || window.chart;
+                    if (targetChart) targetChart.removeSeries(item.obj);
+                }
+            } catch (e) { console.error(e); }
+        });
+        this.drawnObjects = [];
+        this.verticalData = [];
+        this.verticalSeries = null;
+        this.trendStart = null;
+    }
+};
+
+// Global Exposure
+window.startDrawing = (mode, btn) => DrawingManager.start(mode, btn);
+window.clearDrawings = () => DrawingManager.clear();
 
 function initChart() {
     try {
@@ -157,7 +396,36 @@ function initChart() {
             lineWidth: 2,
             crosshairMarkerVisible: false,
             title: 'SMA 20',
+            visible: true
         });
+
+        // Bollinger Bands placeholders
+        bbUpperStub = chart.addLineSeries({ color: 'rgba(4, 111, 232, 0.6)', lineWidth: 2, visible: false, title: 'BB Upper' });
+        bbLowerStub = chart.addLineSeries({ color: 'rgba(4, 111, 232, 0.6)', lineWidth: 2, visible: false, title: 'BB Lower' });
+
+        // Subscribe to clicks for DrawingManager
+        chart.subscribeClick((param) => {
+            DrawingManager.handleClick(param);
+        });
+
+        // --- INDICATOR LOGIC ---
+        window.toggleIndicator = (type) => {
+            const isChecked = document.getElementById('chk-' + type.toLowerCase()).checked;
+
+            if (type === 'VOL') {
+                volumeSeries.applyOptions({ visible: isChecked });
+                // If hidden, scale margins? Nah.
+            }
+            else if (type === 'SMA') {
+                smaSeries.applyOptions({ visible: isChecked });
+            }
+            else if (type === 'BB') {
+                // Logic to Show/Calculate BB is in loadChartData/update
+                bbUpperStub.applyOptions({ visible: isChecked });
+                bbLowerStub.applyOptions({ visible: isChecked });
+                recalcIndicators();
+            }
+        };
 
         const resizeObserver = new ResizeObserver(entries => {
             if (entries.length === 0 || !entries[0].target) return;
@@ -233,21 +501,23 @@ function initChart() {
             const isUp = (candleData.close || 0) >= (candleData.open || 0);
             const color = isUp ? '#10b981' : '#ef4444';
 
-            const wmOptions = chart.applyOptions().watermark || {};
-            const symbolText = wmOptions.text || 'TASI';
+            const wmOptions = chart.options().watermark || {};
+            // Use global currentSymbol if available, else watermark
+            const displaySymbol = currentSymbol || wmOptions.text || 'TASI';
+            const displayName = currentStockName || 'المؤشر العام';
 
             legend.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <span style="font-weight: 700; color: #fff; font-size: 14px;">${symbolText}</span>
-                    <span style="color: #94a3b8; font-size: 11px;">${candleData.time || ''}</span>
+                <div style="font-size: 14px; font-weight: bold; margin-bottom: 6px; color: ${color}; text-align: right; direction: rtl;">
+                    ${displayName} <span style="font-weight: normal; opacity: 0.8; font-size: 0.9em;">(${displaySymbol})</span>
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; direction: ltr;">
+                    <span class="legend-label">O</span> <span class="legend-value">${open}</span>
+                    <span class="legend-label">H</span> <span class="legend-value">${high}</span>
+                    <span class="legend-label">L</span> <span class="legend-value">${low}</span>
+                    <span class="legend-label">C</span> <span class="legend-value" style="color: ${color}">${close}</span>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; font-size: 12px; margin-bottom: 6px;">
-                    <div><span style="color:#94a3b8">O</span> <span style="color:${color}">${open}</span></div>
-                    <div><span style="color:#94a3b8">H</span> <span style="color:${color}">${high}</span></div>
-                    <div><span style="color:#94a3b8">L</span> <span style="color:${color}">${low}</span></div>
-                    <div><span style="color:#94a3b8">C</span> <span style="color:${color}">${close}</span></div>
-                </div>
+
 
                 <div style="display: flex; gap: 12px; font-size: 11px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 4px;">
                     <div>Vol: <span style="color: #e2e8f0;">${volStr}</span></div>
@@ -280,11 +550,71 @@ function initChart() {
 
 // --- NEW DATA FETCHING LOGIC ---
 
+// Global store
+let currentFullHistory = { candles: [], volume: [], sma: [], bbUpper: [], bbLower: [] };
+let currentSymbol = 'TASI';
+let currentStockName = 'المؤشر العام'; // Default name
+let bbUpperStub, bbLowerStub; // Refs
+
+function setChartTimeframe(period) {
+    if (!currentFullHistory || currentFullHistory.candles.length === 0) return;
+
+    // Update active button state
+    document.querySelectorAll('.chart-controls .control-btn').forEach(btn => btn.classList.remove('active'));
+
+    // Find button to active
+    const buttons = document.querySelectorAll('.chart-controls .control-btn');
+    for (let btn of buttons) {
+        if (btn.textContent === period || (period === '1Y' && btn.id === 'btn-1Y')) {
+            btn.classList.add('active');
+            break;
+        }
+    }
+
+    // Filter Data
+    const cutoffDate = new Date();
+    switch (period) {
+        case '1W': cutoffDate.setDate(cutoffDate.getDate() - 7); break;
+        case '1M': cutoffDate.setMonth(cutoffDate.getMonth() - 1); break;
+        case '3M': cutoffDate.setMonth(cutoffDate.getMonth() - 3); break;
+        case '6M': cutoffDate.setMonth(cutoffDate.getMonth() - 6); break;
+        case '1Y': cutoffDate.setFullYear(cutoffDate.getFullYear() - 1); break;
+        case 'ALL': cutoffDate.setFullYear(cutoffDate.getFullYear() - 20); break; // Way back
+    }
+
+    const filteredCandles = [];
+    const filteredVolume = [];
+    const filteredSma = [];
+    const filteredBBU = [];
+    const filteredBBL = [];
+
+    for (let i = 0; i < currentFullHistory.candles.length; i++) {
+        const itemDate = new Date(currentFullHistory.candles[i].time);
+        if (itemDate >= cutoffDate) {
+            filteredCandles.push(currentFullHistory.candles[i]);
+            filteredVolume.push(currentFullHistory.volume[i]);
+            if (currentFullHistory.sma && currentFullHistory.sma[i]) filteredSma.push(currentFullHistory.sma[i]);
+            if (currentFullHistory.bbUpper && currentFullHistory.bbUpper[i]) filteredBBU.push(currentFullHistory.bbUpper[i]);
+            if (currentFullHistory.bbLower && currentFullHistory.bbLower[i]) filteredBBL.push(currentFullHistory.bbLower[i]);
+        }
+    }
+
+    // Apply to Chart
+    candleSeries.setData(filteredCandles);
+    if (volumeSeries) volumeSeries.setData(filteredVolume);
+    if (smaSeries) smaSeries.setData(filteredSma);
+    if (bbUpperStub) bbUpperStub.setData(filteredBBU);
+    if (bbLowerStub) bbLowerStub.setData(filteredBBL);
+
+    chart.timeScale().fitContent();
+}
+
 async function loadChartData(symbolInput, currentPrice = null) {
     if (!candleSeries || !db) return;
 
     // Normalize Symbol
     const symbol = symbolInput || 'TASI';
+    currentSymbol = symbol;
 
     console.log(`Loading history for ${symbol}...`);
 
@@ -296,10 +626,10 @@ async function loadChartData(symbolInput, currentPrice = null) {
     try {
         // 1. Try fetching from Firestore
         const historyRef = db.collection('stocks').doc(symbol).collection('history');
-        // Fetch up to 500 days to ensure we cover the full active range (usually ~252 trading days/year)
-        const snapshot = await historyRef.orderBy('time', 'asc').limit(500).get();
+        // Fetch up to 1000 days for better 'ALL' range
+        const snapshot = await historyRef.orderBy('time', 'asc').limit(1000).get();
 
-        let data = { candles: [], volume: [], sma: [] };
+        let data = { candles: [], volume: [], sma: [], bbUpper: [], bbLower: [] };
 
         if (!snapshot.empty) {
             console.log('Found existing history in DB.');
@@ -339,27 +669,35 @@ async function loadChartData(symbolInput, currentPrice = null) {
 
                 if (historyClose.length >= 20) {
                     const sum = historyClose.reduce((a, b) => a + b, 0);
-                    data.sma.push({ time: c.time, value: sum / 20 });
+                    const avg = sum / 20;
+                    data.sma.push({ time: c.time, value: avg });
+
+                    // BB Calculation (SD)
+                    const sqDiffs = historyClose.map(val => Math.pow(val - avg, 2));
+                    const avgSqDiff = sqDiffs.reduce((a, b) => a + b, 0) / 20;
+                    const sd = Math.sqrt(avgSqDiff);
+
+                    data.bbUpper.push({ time: c.time, value: avg + (2 * sd) });
+                    data.bbLower.push({ time: c.time, value: avg - (2 * sd) });
                 }
             });
 
+            // Store full history
+            currentFullHistory = data;
+
         } else {
             console.warn('No history found for ' + symbol);
-            // DO NOT SEED FAKE DATA anymore.
-            // data = await generateAndSeedHistory(symbol, currentPrice);
+            currentFullHistory = { candles: [], volume: [], sma: [], bbUpper: [], bbLower: [] };
         }
 
-        // 3. Apply Data
-        candleSeries.setData(data.candles);
-        if (volumeSeries) volumeSeries.setData(data.volume);
-        if (smaSeries) smaSeries.setData(data.sma);
+        // 3. Apply Data (Default to 1Y view)
+        setChartTimeframe('1Y');
 
         // 4. Fit & Legend
-        chart.timeScale().fitContent();
-        chart.priceScale('right').applyOptions({ autoScale: true });
+        // (Handled inside setChartTimeframe)
 
         if (chart.updateLegendDefault) {
-            chart.updateLegendDefault(data);
+            chart.updateLegendDefault(currentFullHistory);
         }
 
     } catch (e) {
@@ -367,8 +705,34 @@ async function loadChartData(symbolInput, currentPrice = null) {
     }
 }
 
+// Helper to re-apply data to series based on visibility
+// Called when Toggling indicators or switching Timeframes
+// Note: setChartTimeframe now calls this too ideally? Or we duplicate filtering logic.
+// Let's modify setChartTimeframe to handle all series.
+
+window.recalcIndicators = () => {
+    // Just trigger re-render of current timeframe
+    const currentActiveBtn = document.querySelector('.chart-controls .control-btn.active');
+    let period = '1Y';
+    if (currentActiveBtn) period = currentActiveBtn.textContent;
+    // Actually setChartTimeframe reads from currentFullHistory, so calling it refreshes the view
+    // checking active button text is tricky if we changed logic.
+    // Let's just find the active button:
+    const btns = document.querySelectorAll('.chart-controls .control-btn');
+    btns.forEach(b => {
+        if (b.classList.contains('active') && !b.classList.contains('dropbtn')) {
+            // It's a timeframe button hopefully
+            const txt = b.textContent;
+            if (['1W', '1M', '3M', '6M', '1Y', 'ALL'].includes(txt)) period = txt;
+        }
+    });
+
+    setChartTimeframe(period);
+};
+
 function updateChart(stock) {
     console.log('Stock clicked:', stock);
+    currentStockName = stock.name; // Capture Name
     loadChartData(stock.symbol, stock.price);
 }
 
@@ -423,8 +787,11 @@ function updateHeaderDisplay(data) {
         const priceEl = document.getElementById('header-tasi-price');
         const changeEl = document.getElementById('header-tasi-change');
 
-        if (priceEl && data.price) {
+        // Check against undefined/null strictly, allow 0
+        if (priceEl && data.price !== undefined && data.price !== null) {
             priceEl.textContent = data.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        } else {
+            if (priceEl) priceEl.textContent = "---";
         }
 
         if (changeEl && data.change !== undefined) {

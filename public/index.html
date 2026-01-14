@@ -14,7 +14,7 @@
         rel="stylesheet">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="style.css?v=1.1.0">
+    <link rel="stylesheet" href="style.css?v=1.2.0">
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -91,9 +91,44 @@
             <section class="panel chart-panel" id="chartSection">
                 <!-- Internal Chart Toolbar -->
                 <div class="chart-controls">
-                    <button class="control-btn active">1D</button>
-                    <!-- ... -->
+                    <button class="control-btn" onclick="setChartTimeframe('1W')">1W</button>
+                    <button class="control-btn" onclick="setChartTimeframe('1M')">1M</button>
+                    <button class="control-btn" onclick="setChartTimeframe('3M')">3M</button>
+                    <button class="control-btn" onclick="setChartTimeframe('6M')">6M</button>
+                    <button class="control-btn active" id="btn-1Y" onclick="setChartTimeframe('1Y')">1Y</button>
+                    <button class="control-btn" onclick="setChartTimeframe('ALL')">ALL</button>
+
+                    <div class="toolbar-separator"></div>
+
+                    <!-- Indicators Dropdown -->
+                    <div class="dropdown">
+                        <button class="control-btn dropbtn" onclick="toggleDropdown()">مؤشرات ▾</button>
+                        <div class="dropdown-content" id="indicators-dropdown">
+                            <label><input type="checkbox" id="chk-vol" checked onchange="toggleIndicator('VOL')">
+                                Volume</label>
+                            <label><input type="checkbox" id="chk-sma" checked onchange="toggleIndicator('SMA')"> SMA
+                                20</label>
+                            <label><input type="checkbox" id="chk-bb" onchange="toggleIndicator('BB')"> Bollinger
+                                Bands</label>
+                        </div>
+                    </div>
+
+
+
+                    <!-- Drawing Tools -->
+
+
+                    <div class="toolbar-separator"></div>
+
                     <button class="control-btn" onclick="toggleFullscreen('chartSection')">⛶</button>
+                </div>
+
+                <div class="side-toolbar">
+                    <button class="tool-btn" onclick="startDrawing('horizontal', this)" title="خط أفقي">➖</button>
+                    <button class="tool-btn" onclick="startDrawing('vertical', this)" title="خط عمودي">┃</button>
+                    <button class="tool-btn" onclick="startDrawing('trend', this)" title="خط اتجاه">╱</button>
+                    <div class="toolbar-separator" style="width: 16px; height: 1px; margin: 4px 0;"></div>
+                    <button class="tool-btn" onclick="clearDrawings()" title="مسح الكل">🗑️</button>
                 </div>
 
                 <div id="chart-legend" class="chart-legend"></div>
@@ -105,7 +140,7 @@
     </div>
 
     <!-- Application Logic -->
-    <script src="app.js?v=1.1.0" defer></script>
+    <script src="app.js?v=1.2.0" defer></script>
 </body>
 
 </html>
