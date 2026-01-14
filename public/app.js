@@ -104,6 +104,12 @@ let chart = null;
 let candleSeries = null;
 let volumeSeries = null;
 let smaSeries = null;
+let rsiSeries = null;
+let macdSeries = null;
+let macdSignalSeries = null;
+let macdHistSeries = null;
+let bbUpperStub = null;
+let bbLowerStub = null;
 
 // --- DROPDOWN LOGIC (Global) ---
 window.toggleDropdown = () => {
@@ -135,6 +141,168 @@ const DrawingManager = {
     verticalData: [],
     drawnObjects: [],
 
+    selectedObject: null,
+
+    deselectObject() {
+        if (!this.selectedObject) return;
+        const item = this.selectedObject;
+        this.selectedObject = null;
+        try {
+            if (item.type === 'priceLine') {
+                item.obj.applyOptions({ lineColor: '#f59e0b', lineWidth: 2 });
+            } else if (item.type === 'series') {
+                if (!item.isVertical) item.obj.applyOptions({ color: '#f59e0b', lineWidth: 2 });
+            } else if (item.type === 'vertical') {
+                const idx = this.verticalData.findIndex(d => this.getTimeValue(d.time) === this.getTimeValue(item.time));
+                if (idx !== -1) {
+                    this.verticalData[idx].color = '#f59e0b';
+                    if (this.verticalSeries) this.verticalSeries.setData(this.verticalData);
+                }
+            } else if (item.type === 'indicator') {
+                // Restore Indicator Color
+                const originalColor = item.originalColor || '#2962FF';
+                item.obj.applyOptions({ color: originalColor, lineWidth: 2 });
+            }
+        } catch (e) { console.warn(e); }
+    },
+
+    selectObject(item) {
+        this.deselectObject();
+        this.selectedObject = item;
+        try {
+            if (item.type === 'priceLine') {
+                item.obj.applyOptions({ lineColor: '#ef4444', lineWidth: 4 });
+            } else if (item.type === 'series') {
+                if (!item.isVertical) item.obj.applyOptions({ color: '#ef4444', lineWidth: 4 });
+            } else if (item.type === 'vertical') {
+                const idx = this.verticalData.findIndex(d => this.getTimeValue(d.time) === this.getTimeValue(item.time));
+                if (idx !== -1) {
+                    this.verticalData[idx].color = '#ef4444';
+                    if (this.verticalSeries) this.verticalSeries.setData(this.verticalData);
+                }
+            } else if (item.type === 'indicator') {
+                // Highlight Indicator
+                item.obj.applyOptions({ color: '#ef4444', lineWidth: 4 });
+            }
+            if (window.showToast) showToast('تم التحديد - اضغط Delete للحذف');
+        } catch (e) { console.warn(e); }
+    },
+
+    deleteSelected() {
+        if (!this.selectedObject) return;
+        const item = this.selectedObject;
+        const targetChart = chart || window.chart;
+        const targetSeries = candleSeries || window.candleSeries;
+        try {
+            if (item.type === 'priceLine') {
+                targetSeries.removePriceLine(item.obj);
+                this.drawnObjects = this.drawnObjects.filter(obj => obj.obj !== item.obj);
+            } else if (item.type === 'series' && !item.isVertical) {
+                targetChart.removeSeries(item.obj);
+                this.drawnObjects = this.drawnObjects.filter(obj => obj.obj !== item.obj);
+            } else if (item.type === 'vertical') {
+                this.verticalData = this.verticalData.filter(d => this.getTimeValue(d.time) !== this.getTimeValue(item.time));
+                if (this.verticalSeries) this.verticalSeries.setData(this.verticalData);
+            } else if (item.type === 'indicator') {
+                // Hide Indicator and Uncheck UI
+                this.deselectObject(); // Restore color before hiding checks
+                if (item.name === 'SMA') {
+                    if (window.toggleIndicator) window.toggleIndicator('SMA');
+                    const chk = document.getElementById('chk-sma');
+                    if (chk) chk.checked = false;
+                    // Ensure invisible
+                    if (item.obj) item.obj.applyOptions({ visible: false });
+                } else if (item.name === 'BB') {
+                    // Hide Both Upper and Lower
+                    const chk = document.getElementById('chk-bb');
+                    if (chk) chk.checked = false;
+                    if (bbUpperStub) bbUpperStub.applyOptions({ visible: false });
+                    if (bbLowerStub) bbLowerStub.applyOptions({ visible: false });
+                }
+            }
+
+            this.selectedObject = null;
+            if (window.showToast) showToast('تم الحذف');
+        } catch (e) { console.error(e); }
+    },
+
+    distToSegment(p, v, w) {
+        const l2 = (v.x - w.x) ** 2 + (v.y - w.y) ** 2;
+        if (l2 === 0) return Math.sqrt((p.x - v.x) ** 2 + (p.y - v.y) ** 2);
+        let t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
+        t = Math.max(0, Math.min(1, t));
+        return Math.sqrt((p.x - (v.x + t * (w.x - v.x))) ** 2 + (p.y - (v.y + t * (w.y - v.y))) ** 2);
+    },
+
+    hitTest(param) {
+        if (!param.point) return null;
+        const targetChart = chart || window.chart;
+        const targetSeries = candleSeries || window.candleSeries;
+        if (!targetChart || !targetSeries) return null;
+
+        const x = param.point.x;
+        const y = param.point.y;
+
+        // 1. Horizontal & Trend
+        for (let item of this.drawnObjects) {
+            if (item.type === 'priceLine') {
+                const lineY = targetSeries.priceToCoordinate(item.price);
+                if (lineY !== null && Math.abs(lineY - y) < 10) return item;
+            } else if (item.type === 'series' && !item.isVertical && item.data) {
+                const p1 = item.data[0];
+                const p2 = item.data[1];
+                const x1 = targetChart.timeScale().timeToCoordinate(p1.time);
+                const x2 = targetChart.timeScale().timeToCoordinate(p2.time);
+                const y1 = targetSeries.priceToCoordinate(p1.value);
+                const y2 = targetSeries.priceToCoordinate(p2.value);
+                if (x1 !== null && x2 !== null && y1 !== null && y2 !== null) {
+                    if (this.distToSegment({ x, y }, { x: x1, y: y1 }, { x: x2, y: y2 }) < 10) return item;
+                }
+            }
+        }
+        // 2. Vertical
+        const timeScale = targetChart.timeScale();
+        for (let v of this.verticalData) {
+            const vx = timeScale.timeToCoordinate(v.time);
+            if (vx !== null && Math.abs(vx - x) < 5) return { type: 'vertical', time: v.time };
+        }
+
+        // 3. Indicators (SMA, BB)
+        // Check SMA
+        if (smaSeries && smaSeries.options().visible) {
+            const data = param.seriesData.get(smaSeries);
+            if (data && data.value) {
+                const smaY = smaSeries.priceToCoordinate(data.value);
+                if (smaY !== null && Math.abs(smaY - y) < 10) {
+                    return { type: 'indicator', name: 'SMA', obj: smaSeries, originalColor: '#2962FF' };
+                }
+            }
+        }
+        // Check BB (Upper)
+        if (bbUpperStub && bbUpperStub.options().visible) {
+            const data = param.seriesData.get(bbUpperStub);
+            if (data && data.value) {
+                const bbY = bbUpperStub.priceToCoordinate(data.value);
+                if (bbY !== null && Math.abs(bbY - y) < 10) {
+                    return { type: 'indicator', name: 'BB', obj: bbUpperStub, originalColor: 'rgba(4, 111, 232, 0.6)' };
+                }
+            }
+        }
+        // Check BB (Lower)
+        if (bbLowerStub && bbLowerStub.options().visible) {
+            const data = param.seriesData.get(bbLowerStub);
+            if (data && data.value) {
+                const bbY = bbLowerStub.priceToCoordinate(data.value);
+                if (bbY !== null && Math.abs(bbY - y) < 10) {
+                    // Note: We use the LOWER stub object. But 'BB' name implies grouping.
+                    return { type: 'indicator', name: 'BB', obj: bbLowerStub, originalColor: 'rgba(4, 111, 232, 0.6)' };
+                }
+            }
+        }
+
+        return null;
+    },
+
     getTimeValue(t) {
         if (!t) return 0;
         if (typeof t === 'number') return t;
@@ -159,6 +327,7 @@ const DrawingManager = {
                 const container = document.getElementById('main_chart_container');
                 if (container) container.style.cursor = 'default';
                 this.trendStart = null;
+                this.removePreview(); // Cleanup
                 return;
             }
 
@@ -174,23 +343,89 @@ const DrawingManager = {
                 } else {
                     container.style.cursor = 'default';
                     this.trendStart = null;
+                    this.removePreview();
                 }
             }
         } catch (e) { console.error(e); }
     },
 
+    previewSeries: null,
+
+    removePreview() {
+        if (this.previewSeries) {
+            const targetChart = chart || window.chart;
+            if (targetChart) targetChart.removeSeries(this.previewSeries);
+            this.previewSeries = null;
+        }
+    },
+
+    handleMove(param) {
+        if (this.mode !== 'trend' || !this.trendStart) return;
+
+        const targetChart = chart || window.chart;
+        const targetSeries = candleSeries || window.candleSeries;
+        if (!targetChart || !targetSeries) return;
+
+        const time = param.time || (param.point ? targetChart.timeScale().coordinateToTime(param.point.x) : null);
+        if (!time || !param.point) return;
+
+        const price = targetSeries.coordinateToPrice(param.point.y);
+
+        // Create preview series if not exists
+        if (!this.previewSeries) {
+            this.previewSeries = targetChart.addLineSeries({
+                color: '#f59e0b',
+                lineWidth: 2,
+                lineStyle: 2, // Dashed for preview
+                crosshairMarkerVisible: false,
+                lastValueVisible: false,
+                priceLineVisible: false,
+                title: '',
+            });
+        }
+
+        let p1 = this.trendStart;
+        let p2 = { time: time, price: price };
+
+        let data = [
+            { time: p1.time, value: p1.price },
+            { time: p2.time, value: p2.price }
+        ];
+
+        const t1 = this.getTimeValue(p1.time);
+        const t2 = this.getTimeValue(p2.time);
+
+        if (t1 > t2) {
+            data = [
+                { time: p2.time, value: p2.price },
+                { time: p1.time, value: p1.price }
+            ];
+        }
+
+        // Only set data if times are different
+        if (t1 !== t2) {
+            this.previewSeries.setData(data);
+        }
+    },
+
     handleClick(param) {
-        if (!this.mode) return;
+        // Selection Mode
+        if (!this.mode) {
+            const hit = this.hitTest(param);
+            if (hit) {
+                this.selectObject(hit);
+            } else {
+                this.deselectObject();
+            }
+            return;
+        }
 
         try {
-            // Use window.chart / window.candleSeries explicitly if needed, but the global scope vars should work.
-            // Safety check:
             const targetChart = chart || window.chart;
             const targetSeries = candleSeries || window.candleSeries;
 
             if (!targetSeries || !targetChart) return;
 
-            // 1. Robust Time Retrieval
             let time = param.time;
             if (!time && param.point) {
                 // Try to get time from coordinate for whitespace
@@ -238,7 +473,7 @@ const DrawingManager = {
                         axisLabelVisible: true,
                         title: 'H-Line',
                     });
-                    this.drawnObjects.push({ type: 'priceLine', series: targetSeries, obj: line });
+                    this.drawnObjects.push({ type: 'priceLine', series: targetSeries, obj: line, price: price });
                 }
                 return;
             }
@@ -246,21 +481,28 @@ const DrawingManager = {
             // Trend Line
             if (this.mode === 'trend') {
                 if (!this.trendStart) {
+                    // FIRST CLICK
                     this.trendStart = { time: time, price: price };
-                    if (window.showToast) showToast('حدد النقطة الثانية (P1: ' + this.getTimeValue(time) + ')');
+                    // Don't show toast, user wants visuals
                 } else {
+                    // SECOND CLICK
+                    // SECOND CLICK - Fix Recursion
                     let p1 = this.trendStart;
                     let p2 = { time: time, price: price };
 
-                    // Compare values
+                    // IMPORTANT: Disable interaction BEFORE cleanup to prevent recursion
+                    this.trendStart = null;
+
                     const t1 = this.getTimeValue(p1.time);
                     const t2 = this.getTimeValue(p2.time);
 
-                    if (window.showToast) showToast('Drawing... T1:' + t1 + ', T2:' + t2);
-
                     if (t1 === t2 && p1.price === p2.price) {
-                        return; // Clicked same spot
+                        this.removePreview();
+                        return;
                     }
+
+                    // Safe cleanup
+                    this.removePreview();
 
                     const tSeries = targetChart.addLineSeries({
                         color: '#f59e0b',
@@ -269,41 +511,50 @@ const DrawingManager = {
                         crosshairMarkerVisible: false,
                         lastValueVisible: false,
                         priceLineVisible: false,
-                        autoscaleInfoProvider: () => null,
                         title: '',
                     });
 
-                    let data = [p1, p2];
+                    let data = [
+                        { time: p1.time, value: p1.price },
+                        { time: p2.time, value: p2.price }
+                    ];
 
-                    // Sort by time safely
                     if (t1 > t2) {
-                        data = [p2, p1];
+                        data = [
+                            { time: p2.time, value: p2.price },
+                            { time: p1.time, value: p1.price }
+                        ];
                     }
 
-                    // Strict LWC check: times cannot be equal for LineSeries
-                    if (this.getTimeValue(data[0].time) === this.getTimeValue(data[1].time)) {
-                        if (window.showToast) showToast('خطأ: التوقيت متطابق (' + t1 + ')');
+                    // Validate prices
+                    if (!Number.isFinite(p1.price) || !Number.isFinite(p2.price)) {
                         targetChart.removeSeries(tSeries);
+                        if (window.showToast) showToast('خطأ: السعر غير صالح');
+                        return;
+                    }
+
+                    if (this.getTimeValue(data[0].time) === this.getTimeValue(data[1].time)) {
+                        targetChart.removeSeries(tSeries);
+                        if (window.showToast) showToast('خطأ: التوقيت متطابق');
                         return;
                     }
 
                     try {
                         tSeries.setData(data);
-                        this.drawnObjects.push({ type: 'series', obj: tSeries });
-                        this.trendStart = null;
-                        if (window.showToast) showToast('تم رسم الخط بنجاح');
+                        this.drawnObjects.push({ type: 'series', obj: tSeries, data: data });
+                        if (window.showToast) showToast('تم التثبيت');
                     } catch (setErr) {
                         console.error("SetData Error:", setErr);
                         targetChart.removeSeries(tSeries);
-                        if (window.showToast) showToast('خطأ في البيانات: ' + setErr.message);
+                        if (window.showToast) showToast('فشل الرسم: ' + setErr.message);
                     }
                 }
             }
         } catch (err) {
             console.error(err);
-            if (window.showToast) showToast('خطأ: ' + err.message);
         }
     },
+
 
     clear() {
         this.drawnObjects.forEach(item => {
@@ -326,6 +577,13 @@ const DrawingManager = {
 // Global Exposure
 window.startDrawing = (mode, btn) => DrawingManager.start(mode, btn);
 window.clearDrawings = () => DrawingManager.clear();
+
+// Keyboard Listener for Deletion
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+        DrawingManager.deleteSelected();
+    }
+});
 
 function initChart() {
     try {
@@ -400,28 +658,107 @@ function initChart() {
         bbUpperStub = chart.addLineSeries({ color: 'rgba(4, 111, 232, 0.6)', lineWidth: 2, visible: false, title: 'BB Upper' });
         bbLowerStub = chart.addLineSeries({ color: 'rgba(4, 111, 232, 0.6)', lineWidth: 2, visible: false, title: 'BB Lower' });
 
+        // RSI Series (Separate Scale)
+        rsiSeries = chart.addLineSeries({
+            color: '#a855f7', // Purple
+            lineWidth: 2,
+            priceScaleId: 'rsi', // Custom Scale
+            visible: false,
+            title: 'RSI 14'
+        });
+        chart.priceScale('rsi').applyOptions({
+            scaleMargins: { top: 0.8, bottom: 0 },
+            visible: false
+        });
+
+        // MACD Series (Separate Scale)
+        macdSeries = chart.addLineSeries({
+            color: '#2962FF',
+            lineWidth: 2,
+            priceScaleId: 'macd',
+            visible: false,
+            title: 'MACD'
+        });
+        macdSignalSeries = chart.addLineSeries({
+            color: '#FF6D00',
+            lineWidth: 2,
+            priceScaleId: 'macd',
+            visible: false,
+            title: 'Signal'
+        });
+        macdHistSeries = chart.addHistogramSeries({
+            color: '#26a69a',
+            priceScaleId: 'macd',
+            visible: false,
+            title: 'Hist'
+        });
+        chart.priceScale('macd').applyOptions({
+            scaleMargins: { top: 0.8, bottom: 0 },
+            visible: false
+        });
+
         // Subscribe to clicks for DrawingManager
         chart.subscribeClick((param) => {
             DrawingManager.handleClick(param);
         });
 
+        // Subscribe to move for Interactive Drawing
+        chart.subscribeCrosshairMove((param) => {
+            DrawingManager.handleMove(param);
+            updateLegend(param); // Existing legend update
+        });
+
+        // --- INDICATOR LOGIC ---
         // --- INDICATOR LOGIC ---
         window.toggleIndicator = (type) => {
-            const isChecked = document.getElementById('chk-' + type.toLowerCase()).checked;
+            const chk = document.getElementById('chk-' + type.toLowerCase());
+            if (!chk) return;
+            const isChecked = chk.checked;
 
             if (type === 'VOL') {
-                volumeSeries.applyOptions({ visible: isChecked });
-                // If hidden, scale margins? Nah.
+                if (volumeSeries) volumeSeries.applyOptions({ visible: isChecked });
             }
             else if (type === 'SMA') {
-                smaSeries.applyOptions({ visible: isChecked });
+                if (smaSeries) smaSeries.applyOptions({ visible: isChecked });
             }
             else if (type === 'BB') {
-                // Logic to Show/Calculate BB is in loadChartData/update
-                bbUpperStub.applyOptions({ visible: isChecked });
-                bbLowerStub.applyOptions({ visible: isChecked });
-                recalcIndicators();
+                if (bbUpperStub) bbUpperStub.applyOptions({ visible: isChecked });
+                if (bbLowerStub) bbLowerStub.applyOptions({ visible: isChecked });
             }
+            else if (type === 'RSI') {
+                if (rsiSeries) {
+                    rsiSeries.applyOptions({ visible: isChecked });
+                    chart.priceScale('rsi').applyOptions({ visible: isChecked });
+                }
+            }
+            else if (type === 'MACD') {
+                if (macdSeries) {
+                    macdSeries.applyOptions({ visible: isChecked });
+                    macdSignalSeries.applyOptions({ visible: isChecked });
+                    macdHistSeries.applyOptions({ visible: isChecked });
+                    chart.priceScale('macd').applyOptions({ visible: isChecked });
+                }
+            }
+
+            // Layout Resizing Logic (Dual Pane Simulation)
+            const showRSI = document.getElementById('chk-rsi') && document.getElementById('chk-rsi').checked;
+            const showMACD = document.getElementById('chk-macd') && document.getElementById('chk-macd').checked;
+            const anyBottomIndicator = showRSI || showMACD;
+
+            if (anyBottomIndicator) {
+                // Shrink Main Chart to top 70%
+                if (candleSeries) candleSeries.priceScale().applyOptions({ scaleMargins: { top: 0, bottom: 0.3 } });
+                // Ensure Volume is at bottom (overlaying indicator? or shrink it?)
+                // Default Volume top:0.8 means bottom 20%.
+                // Indicators are also bottom 20%.
+                // It's acceptable overlap or we can hide volume if congested.
+                // Let's keep it.
+            } else {
+                // Restore Full Height
+                if (candleSeries) candleSeries.priceScale().applyOptions({ scaleMargins: { top: 0, bottom: 0 } });
+            }
+
+            recalcIndicators();
         };
 
         const resizeObserver = new ResizeObserver(entries => {
@@ -551,7 +888,7 @@ function initChart() {
 let currentFullHistory = { candles: [], volume: [], sma: [], bbUpper: [], bbLower: [] };
 let currentSymbol = 'TASI';
 let currentStockName = 'المؤشر العام'; // Default name
-let bbUpperStub, bbLowerStub; // Refs
+// Refs declared at top
 
 function setChartTimeframe(period) {
     if (!currentFullHistory || currentFullHistory.candles.length === 0) return;
@@ -579,29 +916,39 @@ function setChartTimeframe(period) {
         case 'ALL': cutoffDate.setFullYear(cutoffDate.getFullYear() - 20); break; // Way back
     }
 
-    const filteredCandles = [];
-    const filteredVolume = [];
-    const filteredSma = [];
-    const filteredBBU = [];
-    const filteredBBL = [];
+    // Filter Helper
+    const filterByDate = (arr) => {
+        if (!arr) return [];
+        return arr.filter(item => {
+            if (!item.time) return false;
+            const t = new Date(item.time);
+            return t >= cutoffDate;
+        });
+    };
 
-    for (let i = 0; i < currentFullHistory.candles.length; i++) {
-        const itemDate = new Date(currentFullHistory.candles[i].time);
-        if (itemDate >= cutoffDate) {
-            filteredCandles.push(currentFullHistory.candles[i]);
-            filteredVolume.push(currentFullHistory.volume[i]);
-            if (currentFullHistory.sma && currentFullHistory.sma[i]) filteredSma.push(currentFullHistory.sma[i]);
-            if (currentFullHistory.bbUpper && currentFullHistory.bbUpper[i]) filteredBBU.push(currentFullHistory.bbUpper[i]);
-            if (currentFullHistory.bbLower && currentFullHistory.bbLower[i]) filteredBBL.push(currentFullHistory.bbLower[i]);
-        }
-    }
+    const filteredCandles = filterByDate(currentFullHistory.candles);
+    const filteredVolume = filterByDate(currentFullHistory.volume);
+    const filteredSma = filterByDate(currentFullHistory.sma);
+    const filteredBBU = filterByDate(currentFullHistory.bbUpper);
+    const filteredBBL = filterByDate(currentFullHistory.bbLower);
+
+    // Indicators
+    const filteredRSI = filterByDate(currentFullHistory.rsi);
+    const filteredMACD = filterByDate(currentFullHistory.macd);
+    const filteredMACDSignal = filterByDate(currentFullHistory.macdSignal);
+    const filteredMACDHist = filterByDate(currentFullHistory.macdHist);
 
     // Apply to Chart
-    candleSeries.setData(filteredCandles);
+    if (candleSeries) candleSeries.setData(filteredCandles);
     if (volumeSeries) volumeSeries.setData(filteredVolume);
     if (smaSeries) smaSeries.setData(filteredSma);
     if (bbUpperStub) bbUpperStub.setData(filteredBBU);
     if (bbLowerStub) bbLowerStub.setData(filteredBBL);
+
+    if (rsiSeries) rsiSeries.setData(filteredRSI);
+    if (macdSeries) macdSeries.setData(filteredMACD);
+    if (macdSignalSeries) macdSignalSeries.setData(filteredMACDSignal);
+    if (macdHistSeries) macdHistSeries.setData(filteredMACDHist);
 
     chart.timeScale().fitContent();
 }
@@ -679,12 +1026,40 @@ async function loadChartData(symbolInput, currentPrice = null) {
                 }
             });
 
+            // Calculate RSI & MACD
+            const rsiValues = calculateRSI(historyClose);
+            const macdValues = calculateMACD(historyClose);
+
+            data.rsi = [];
+            data.macd = [];
+            data.macdSignal = [];
+            data.macdHist = [];
+
+            data.candles.forEach((c, i) => {
+                if (rsiValues[i] !== null && rsiValues[i] !== undefined) {
+                    data.rsi.push({ time: c.time, value: rsiValues[i] });
+                }
+
+                if (macdValues.macd[i] !== null) {
+                    data.macd.push({ time: c.time, value: macdValues.macd[i] });
+                    data.macdSignal.push({ time: c.time, value: macdValues.signal[i] });
+
+                    const histVal = macdValues.hist[i];
+                    const color = histVal >= 0 ? '#26a69a' : '#ef4444';
+                    data.macdHist.push({ time: c.time, value: histVal, color: color });
+                }
+            });
+
             // Store full history
             currentFullHistory = data;
+            currentFullHistory.rsi = data.rsi; // ensure explicit access
+            currentFullHistory.macd = data.macd;
+            currentFullHistory.macdSignal = data.macdSignal;
+            currentFullHistory.macdHist = data.macdHist;
 
         } else {
             console.warn('No history found for ' + symbol);
-            currentFullHistory = { candles: [], volume: [], sma: [], bbUpper: [], bbLower: [] };
+            currentFullHistory = { candles: [], volume: [], sma: [], bbUpper: [], bbLower: [], rsi: [], macd: [], macdSignal: [], macdHist: [] };
         }
 
         // 3. Apply Data (Default to 1Y view)
@@ -733,7 +1108,120 @@ function updateChart(stock) {
     loadChartData(stock.symbol, stock.price);
 }
 
-// function seedInitialData(db) { ... } // Removed
+// --- INDICATOR HELPERS ---
+
+function calculateRSI(prices, period = 14) {
+    if (prices.length < period) return [];
+
+    let result = [];
+    // Need alignment with timestamps. We assume prices array matches candles array index-wise.
+    // However, RSI starts after 'period'.
+    // We'll return an array of { value: rsi } or nulls for first N items.
+
+    let gains = 0;
+    let losses = 0;
+
+    // First RSI
+    for (let i = 1; i <= period; i++) {
+        const change = prices[i] - prices[i - 1];
+        if (change > 0) gains += change;
+        else losses += Math.abs(change);
+    }
+
+    let avgGain = gains / period;
+    let avgLoss = losses / period;
+
+    // Fill first 'period' with nulls
+    for (let i = 0; i < period; i++) result.push(null);
+
+    let firstRS = avgGain / avgLoss;
+    let firstRSI = 100 - (100 / (1 + firstRS));
+    if (avgLoss === 0) firstRSI = 100;
+
+    result.push(firstRSI);
+
+    // Rest
+    for (let i = period + 1; i < prices.length; i++) {
+        const change = prices[i] - prices[i - 1];
+        let gain = change > 0 ? change : 0;
+        let loss = change < 0 ? Math.abs(change) : 0;
+
+        avgGain = (avgGain * (period - 1) + gain) / period;
+        avgLoss = (avgLoss * (period - 1) + loss) / period;
+
+        let rs = avgGain / avgLoss;
+        let rsi = 100 - (100 / (1 + rs));
+        if (avgLoss === 0) rsi = 100;
+
+        result.push(rsi);
+    }
+
+    return result;
+}
+
+function calculateMACD(prices, fast = 12, slow = 26, signal = 9) {
+    if (prices.length < slow) return { macd: [], signal: [], hist: [] };
+
+    function calculateEMA(data, period) {
+        const k = 2 / (period + 1);
+        let emaArray = [];
+        // SMA for first value
+        if (data.length < period) return [];
+        let sum = 0;
+        for (let i = 0; i < period; i++) sum += data[i];
+        let ema = sum / period;
+
+        for (let i = 0; i < period - 1; i++) emaArray.push(null);
+        emaArray.push(ema);
+
+        for (let i = period; i < data.length; i++) {
+            ema = (data[i] * k) + (emaArray[i - 1] || ema) * (1 - k);
+            emaArray.push(ema);
+        }
+        return emaArray;
+    }
+
+    const emaFast = calculateEMA(prices, fast);
+    const emaSlow = calculateEMA(prices, slow);
+
+    const macdLine = [];
+    for (let i = 0; i < prices.length; i++) {
+        if (emaFast[i] !== null && emaSlow[i] !== null) {
+            macdLine.push(emaFast[i] - emaSlow[i]);
+        } else {
+            macdLine.push(null);
+        }
+    }
+
+    // Signal Line (EMA of MACD Line)
+    // We need to strip nulls to calc EMA, then map back?
+    // Easier: Just calc EMA on the valid part.
+    // Logic: Find first non-null index
+    let startIdx = 0;
+    while (startIdx < macdLine.length && macdLine[startIdx] === null) startIdx++;
+
+    const validMacd = macdLine.slice(startIdx);
+    const validSignal = calculateEMA(validMacd, signal);
+
+    const signalLine = [];
+    // Pad with nulls
+    for (let i = 0; i < startIdx; i++) signalLine.push(null);
+    // Combine
+    for (let i = 0; i < validSignal.length; i++) {
+        signalLine.push(validSignal[i]); // validSignal already has nulls for its own warmup? Yes calculateEMA does that.
+    }
+
+    const hist = [];
+    for (let i = 0; i < prices.length; i++) {
+        if (macdLine[i] !== null && signalLine[i] !== null) {
+            hist.push(macdLine[i] - signalLine[i]);
+        } else {
+            hist.push(null);
+        }
+    }
+
+    return { macd: macdLine, signal: signalLine, hist: hist };
+}
 
 function renderMarketTable(stocksToRender) {
     const listBody = document.getElementById('market_table_body');

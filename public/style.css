@@ -457,24 +457,22 @@ body {
 .dropdown-content label {
     display: block;
     width: 100%;
+}
 
-    /* Toast */
-    .toast-msg {
-        position: fixed;
-        top: 60px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #333;
-        color: #fff;
-        padding: 8px 16px;
-        border-radius: 20px;
-        z-index: 9999;
-        font-size: 14px;
-        opacity: 1;
-        transition: opacity 0.5s ease;
-        pointer-events: none;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    }
-
-    box-sizing: border-box;
+/* Toast (Moved to root) */
+.toast-msg {
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    z-index: 9999;
+    font-size: 14px;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
