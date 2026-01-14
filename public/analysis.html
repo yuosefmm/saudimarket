@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWM - التحليل المالي v1.2.13</title>
+    <title>SWM - التحليل المالي v1.2.14</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -95,7 +95,7 @@
                 <span class="brand-icon">⚡</span>
                 <div style="display: flex; flex-direction: column;">
                     <span style="line-height: 1;">المتداول</span>
-                    <span style="font-size: 10px; opacity: 0.6; font-family: monospace;">v1.2.13</span>
+                    <span style="font-size: 10px; opacity: 0.6; font-family: monospace;">v1.2.14</span>
                 </div>
             </div>
 
@@ -120,10 +120,10 @@
         </header>
 
         <!-- Control Bar -->
-        <div class="control-bar" style="padding: 20px 20px 0 20px; display: flex; justify-content: flex-end;">
-            <div class="custom-select" style="position: relative; width: 250px;">
+        <div class="control-bar" style="padding: 20px 20px 10px 20px; display: flex; justify-content: flex-start;">
+            <div class="custom-select" style="position: relative; width: 220px;">
                 <select id="analysis-selector" class="dropdown-select"
-                    style="width: 100%; padding: 12px; background: var(--panel-bg); color: #fff; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; cursor: pointer; font-size: 16px;">
+                    style="width: 100%; padding: 8px 12px; background: #334155; color: #fff; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; cursor: pointer; font-size: 14px; outline: none;">
                     <option value="gainers">الأكثر ارتفاعاً 🚀</option>
                     <option value="losers">الأكثر انخفاضاً 🔻</option>
                     <option value="volume">الأعلى سيولة 💰</option>
@@ -132,26 +132,30 @@
         </div>
 
         <!-- Analysis Dashboard -->
-        <main class="analysis-container" style="padding: 20px;">
+        <main class="analysis-container" style="padding: 0 20px 20px 20px;">
             <div class="card"
-                style="min-height: 400px; height: calc(100vh - 150px); overflow: hidden; display: flex; flex-direction: column;">
-                <div class="card-header" id="table-title">
+                style="min-height: 400px; height: calc(100vh - 140px); overflow: hidden; display: flex; flex-direction: column;">
+                <div class="card-header" id="table-title"
+                    style="font-size: 14px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.05);">
                     الأكثر ارتفاعاً 🚀
                 </div>
 
                 <div class="table-wrapper" style="flex: 1; overflow-y: auto;">
-                    <table class="data-table" style="width: 100%; border-collapse: collapse;">
+                    <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
                         <thead style="position: sticky; top: 0; background: var(--panel-bg); z-index: 1;">
                             <tr>
                                 <th
-                                    style="padding: 12px; text-align: right; border-bottom: 1px solid var(--border-color);">
+                                    style="padding: 8px; text-align: right; border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-weight: 500;">
                                     الشركة</th>
                                 <th
-                                    style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color);">
+                                    style="padding: 8px; text-align: left; border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-weight: 500;">
                                     آخر سعر</th>
                                 <th
-                                    style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color);">
+                                    style="padding: 8px; text-align: left; border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-weight: 500;">
                                     التغير %</th>
+                                <th
+                                    style="padding: 8px; text-align: left; border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-weight: 500;">
+                                    قيمة التغير</th>
                             </tr>
                         </thead>
                         <tbody id="analysis-table-body">
@@ -164,7 +168,7 @@
     </div>
 
     <!-- Logic -->
-    <script src="analysis.js?v=1.2.13"></script>
+    <script src="analysis.js?v=1.2.14"></script>
 </body>
 
 </html>
