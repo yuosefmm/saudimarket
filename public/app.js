@@ -247,7 +247,7 @@ const DrawingManager = {
             if (this.mode === 'trend') {
                 if (!this.trendStart) {
                     this.trendStart = { time: time, price: price };
-                    if (window.showToast) showToast('حدد النقطة الثانية');
+                    if (window.showToast) showToast('حدد النقطة الثانية (P1: ' + this.getTimeValue(time) + ')');
                 } else {
                     let p1 = this.trendStart;
                     let p2 = { time: time, price: price };
@@ -255,6 +255,8 @@ const DrawingManager = {
                     // Compare values
                     const t1 = this.getTimeValue(p1.time);
                     const t2 = this.getTimeValue(p2.time);
+
+                    if (window.showToast) showToast('Drawing... T1:' + t1 + ', T2:' + t2);
 
                     if (t1 === t2 && p1.price === p2.price) {
                         return; // Clicked same spot
@@ -280,9 +282,7 @@ const DrawingManager = {
 
                     // Strict LWC check: times cannot be equal for LineSeries
                     if (this.getTimeValue(data[0].time) === this.getTimeValue(data[1].time)) {
-                        if (window.showToast) showToast('لا يمكن رسم خط عمودي هنا');
-                        // Clean up the empty series we just created?
-                        // Actually LWC returns the series, but it's empty. We should probably remove it.
+                        if (window.showToast) showToast('خطأ: التوقيت متطابق (' + t1 + ')');
                         targetChart.removeSeries(tSeries);
                         return;
                     }
@@ -291,14 +291,11 @@ const DrawingManager = {
                         tSeries.setData(data);
                         this.drawnObjects.push({ type: 'series', obj: tSeries });
                         this.trendStart = null;
-                        // Reset cursor
-                        // document.getElementById('main_chart_container').style.cursor = 'default';
-                        // this.mode = null; // Should we stop drawing after one line? Usually users want to draw multiple. 
-                        // Current behavior: keeps tool active. 
+                        if (window.showToast) showToast('تم رسم الخط بنجاح');
                     } catch (setErr) {
                         console.error("SetData Error:", setErr);
                         targetChart.removeSeries(tSeries);
-                        if (window.showToast) showToast('حدث خطأ في الرسم');
+                        if (window.showToast) showToast('خطأ في البيانات: ' + setErr.message);
                     }
                 }
             }
