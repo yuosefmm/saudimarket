@@ -985,24 +985,32 @@ async function loadChartData(symbolInput, currentPrice = null) {
                 const time = item.time; // stored as YYYY-MM-DD
 
                 // Candle
+                const openVal = parseFloat(item.open);
+                const highVal = parseFloat(item.high);
+                const lowVal = parseFloat(item.low);
+                const closeVal = parseFloat(item.close);
+                const volVal = parseFloat(item.volume);
+
+                if (isNaN(closeVal)) return; // Skip invalid records
+
                 data.candles.push({
                     time: time,
-                    open: item.open,
-                    high: item.high,
-                    low: item.low,
-                    close: item.close
+                    open: openVal,
+                    high: highVal,
+                    low: lowVal,
+                    close: closeVal
                 });
 
                 // Volume
-                const isUp = item.close >= item.open;
+                const isUp = closeVal >= openVal;
                 data.volume.push({
                     time: time,
-                    value: item.volume,
+                    value: isNaN(volVal) ? 0 : volVal,
                     color: isUp ? 'rgba(16, 185, 129, 0.5)' : 'rgba(239, 68, 68, 0.5)'
                 });
 
                 // SMA Prep
-                historyClose.push(item.close);
+                historyClose.push(closeVal);
             });
 
             // Calculate SMA on client side
@@ -1027,8 +1035,11 @@ async function loadChartData(symbolInput, currentPrice = null) {
             });
 
             // Calculate RSI & MACD
-            const rsiValues = calculateRSI(historyClose);
-            const macdValues = calculateMACD(historyClose);
+            // Re-build full history array from clean candles just to be safe
+            const cleanPrices = data.candles.map(c => c.close);
+
+            const rsiValues = calculateRSI(cleanPrices);
+            const macdValues = calculateMACD(cleanPrices);
 
             data.rsi = [];
             data.macd = [];
@@ -1036,11 +1047,14 @@ async function loadChartData(symbolInput, currentPrice = null) {
             data.macdHist = [];
 
             data.candles.forEach((c, i) => {
-                if (rsiValues[i] !== null && rsiValues[i] !== undefined) {
-                    data.rsi.push({ time: c.time, value: rsiValues[i] });
+                // RSI
+                const rVal = rsiValues[i];
+                if (rVal !== null && rVal !== undefined && !isNaN(rVal)) {
+                    data.rsi.push({ time: c.time, value: rVal });
                 }
 
-                if (macdValues.macd[i] !== null) {
+                // MACD
+                if (macdValues.macd[i] !== null && !isNaN(macdValues.macd[i])) {
                     data.macd.push({ time: c.time, value: macdValues.macd[i] });
                     data.macdSignal.push({ time: c.time, value: macdValues.signal[i] });
 
