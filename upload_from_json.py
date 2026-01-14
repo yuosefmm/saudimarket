@@ -65,7 +65,7 @@ def upload_all():
             # Policy: Full history for TASI, Last 7 days for others.
             
             if symbol_id == 'TASI':
-                target_history = history_list # Full history
+                target_history = history_list[-30:] # Last 30 days (Safe & Fast)
             else:
                 target_history = history_list[-7:] # Last 7 records only
             
