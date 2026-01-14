@@ -85,7 +85,21 @@ def fetch_and_store_news():
         batch.commit()
         print(f"Saved {count} items to Firestore.")
     else:
-        print("No new items to save.")
+        # Fallback if no news found (e.g. API limit or issue)
+        if count == 0:
+            print("Injecting sample news item...")
+            sample_item = {
+                'title': 'مرحباً بك في صفحة الأخبار (تجريبي)',
+                'publisher': 'SWM System',
+                'link': '#',
+                'published': datetime.now(),
+                'uuid': 'sample_001',
+                'type': 'system'
+            }
+            collection.document('sample_001').set(sample_item)
+            print("Saved sample item.")
+        else:
+            print("No new items to save.")
 
 if __name__ == "__main__":
     fetch_and_store_news()
