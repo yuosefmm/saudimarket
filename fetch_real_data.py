@@ -115,8 +115,13 @@ def upload_stock_history(symbol_id, stock_info, period, should_clear=False):
         latest_percent = 0
         
         closes = df['Close'].tolist()
+
+        # CHECK INCREMENTAL MODE (Default: True)
+        # If FULL_SYNC is NOT set, we only write the last 3 days to save writes
+        is_full_sync = os.getenv('FULL_SYNC', 'false').lower() == 'true'
+        target_df = df if is_full_sync else df.tail(3)
         
-        for index, row in df.iterrows():
+        for index, row in target_df.iterrows():
             if pd.isna(row['Open']) or pd.isna(row['Close']):
                 continue
 
@@ -138,8 +143,11 @@ def upload_stock_history(symbol_id, stock_info, period, should_clear=False):
             doc_ref = history_ref.document(date_str)
             items_to_write.append((doc_ref, doc_data))
             
-            latest_close = doc_data['close']
             count += 1
+            
+        # Capture latest close from FULL df, even if we scan only tail
+        if not df.empty:
+             latest_close = df.iloc[-1]['Close'] 
             
         # Execute writes SEQUENTIALLY with logging
         # Reduce Logging to avoid spam
@@ -167,9 +175,9 @@ def upload_stock_history(symbol_id, stock_info, period, should_clear=False):
             if closes[-2] > 0:
                 latest_percent = (latest_change / closes[-2]) * 100
 
-        print(f"      Uploaded {count} records + Technicals (RSI: {latest_rsi:.1f}).", flush=True)
+        print(f"      Uploaded {len(items_to_write)} records (FullSync={is_full_sync}) + Technicals (RSI: {latest_rsi:.1f}).", flush=True)
 
-        if count > 0:
+        if count > 0 or not is_full_sync: # Even if count 0 (unlikely with tail), we update main doc
             # E. UPDATE MAIN DOC
             info = ticker.fast_info
             
