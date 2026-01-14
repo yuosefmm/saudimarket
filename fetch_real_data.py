@@ -63,9 +63,43 @@ def upload_stock_history(symbol_id, stock_info, period, should_clear=False):
             print(f"      Warning: No data found for {yahoo_ticker}", flush=True)
             return
 
+        # C. CALCULATE INDICATORS (RSI, MACD, SMA)
+        # ----------------------------------------------------
+        # SMA 20
+        df['SMA_20'] = df['Close'].rolling(window=20).mean()
+        
+        # RSI 14
+        delta = df['Close'].diff()
+        gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+        loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+        rs = gain / loss
+        df['RSI_14'] = 100 - (100 / (1 + rs))
+        
+        # MACD (12, 26, 9) - simplified using EWMA
+        k_fast = df['Close'].ewm(span=12, adjust=False).mean()
+        k_slow = df['Close'].ewm(span=26, adjust=False).mean()
+        df['MACD'] = k_fast - k_slow
+        df['MACD_Signal'] = df['MACD'].ewm(span=9, adjust=False).mean()
+        df['MACD_Hist'] = df['MACD'] - df['MACD_Signal']
+        
+        # Get Latest Values
+        if len(df) > 0:
+            last_idx = df.index[-1]
+            latest_rsi = convert_val(df.at[last_idx, 'RSI_14'])
+            latest_macd = convert_val(df.at[last_idx, 'MACD'])
+            latest_macd_sig = convert_val(df.at[last_idx, 'MACD_Signal'])
+            latest_macd_hist = convert_val(df.at[last_idx, 'MACD_Hist'])
+            latest_sma_20 = convert_val(df.at[last_idx, 'SMA_20'])
+        else:
+            latest_rsi = 50.0
+            latest_macd = 0.0
+            latest_macd_sig = 0.0
+            latest_macd_hist = 0.0
+            latest_sma_20 = 0.0
+
         # B. PREPARE FIRESTORE
-        # Redirect to DEBUG collection to test if 'stocks' is broken
-        history_ref = db.collection('stocks_debug').document(symbol_id).collection('history')
+        # TARGET PRODUCTION COLLECTION
+        history_ref = db.collection('stocks').document(symbol_id).collection('history')
         
         items_to_write = []
         
@@ -102,19 +136,24 @@ def upload_stock_history(symbol_id, stock_info, period, should_clear=False):
             count += 1
             
         # Execute writes SEQUENTIALLY with logging
-        print(f"      Writing {len(items_to_write)} records (Sequential/Sanitized/DEBUG_COLL)...", flush=True)
+        # Reduce Logging to avoid spam
+        # print(f"      Writing {len(items_to_write)} records...", flush=True)
         
         write_count = 0
+        batch = db.batch()
+        batch_size = 0
+        
+        # Use Batches for Faster Write
         for ref, data in items_to_write:
-            try:
-                # print(f"        Writing {data['time']}...", end='', flush=True) 
-                ref.set(data)
-                # print(" OK", flush=True)
-                write_count += 1
-                if write_count % 10 == 0:
-                   print(f"        {write_count}/{len(items_to_write)}", flush=True)
-            except Exception as e:
-                print(f"        Error writing {data['time']}: {e}", flush=True)
+            batch.set(ref, data)
+            batch_size += 1
+            if batch_size >= 400:
+                batch.commit()
+                batch = db.batch()
+                batch_size = 0
+        
+        if batch_size > 0:
+            batch.commit()
             
         # Calculate change
         if len(closes) >= 2:
@@ -122,7 +161,7 @@ def upload_stock_history(symbol_id, stock_info, period, should_clear=False):
             if closes[-2] > 0:
                 latest_percent = (latest_change / closes[-2]) * 100
 
-        print(f"      Uploaded {count} records.", flush=True)
+        print(f"      Uploaded {count} records + Technicals (RSI: {latest_rsi:.1f}).", flush=True)
 
         if count > 0:
             # E. UPDATE MAIN DOC
@@ -139,7 +178,14 @@ def upload_stock_history(symbol_id, stock_info, period, should_clear=False):
                 'change': sanitize(latest_change),
                 'percent': sanitize(latest_percent),
                 'year_high': sanitize(info.year_high) if info.year_high else 0.0,
-                'year_low': sanitize(info.year_low) if info.year_low else 0.0
+                'year_low': sanitize(info.year_low) if info.year_low else 0.0,
+                # TECHNICALS
+                'rsi_14': latest_rsi,
+                'macd': latest_macd,
+                'macd_signal': latest_macd_sig,
+                'macd_hist': latest_macd_hist,
+                'sma_20': latest_sma_20,
+                'lastUpdated': datetime.now()
             }
             
             main_doc_ref.set(current_data, merge=True)
@@ -150,8 +196,13 @@ def upload_stock_history(symbol_id, stock_info, period, should_clear=False):
         print(f"Errors on {symbol_id}", flush=True)
         traceback.print_exc()
 
+def convert_val(val):
+    if pd.isna(val) or np.isinf(val):
+        return 0.0
+    return float(val)
+
 # --- MAIN EXECUTION ---
-print("🚀 Starting Full Market Sync (yfinance)...", flush=True)
+print("🚀 Starting Full Market Sync (yfinance + Technicals)...", flush=True)
 
 # Add TASI explicitly if not in list
 if 'TASI' not in stocks_map:
@@ -177,9 +228,9 @@ total = len(stocks_map)
 for symbol_id, stock_item in stocks_map.items():
     count_i += 1
     
-    # DEBUG: Limit to first 3 stocks
-    if count_i > 3: 
-        continue
+    # REMOVED LIMIT - PROCESS ALL
+    # if count_i > 3: 
+    #     continue
 
     # We use 1yr range to get history.
     try:

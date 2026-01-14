@@ -74,10 +74,37 @@ function updateView(mode) {
         sortedList = [...allStocksData].sort((a, b) => (a.percent || 0) - (b.percent || 0)).slice(0, 20); // Bottom 20
     } else if (mode === 'volume') {
         titleEl.textContent = 'الأعلى سيولة 💰 (مقدرة)';
-        // Sort by Volume (if available) or mock
         sortedList = [...allStocksData].filter(s => s.volume).sort((a, b) => (b.volume || 0) - (a.volume || 0)).slice(0, 20);
         if (sortedList.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">بيانات السيولة غير متوفرة حالياً</td></tr>';
+            return;
+        }
+    } else if (mode === 'speculative') {
+        titleEl.textContent = 'فرص مضاربية (ذهبية) ✨';
+        // Strategy: RSI 50-70 + Price > SMA20 + MACD > Signal
+        // Note: Needs valid backend data.
+        sortedList = allStocksData.filter(s => {
+            if (!s.rsi_14 || !s.sma_20) return false;
+            const rsiOk = s.rsi_14 >= 50 && s.rsi_14 <= 70;
+            const trendOk = s.price > s.sma_20;
+            const macdOk = s.macd > s.macd_signal; // Bullish Momentum
+            return rsiOk && trendOk && macdOk;
+        }).sort((a, b) => (b.percent || 0) - (a.percent || 0)).slice(0, 10);
+
+        if (sortedList.length === 0) {
+            sortedList = []; // Show empty or could show strict failures
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">لا توجد فرص مطابقة للشروط حالياً (تحتاج تحديث البيانات)</td></tr>';
+            return;
+        }
+    } else if (mode === 'oversold') {
+        titleEl.textContent = 'ارتداد من القاع (تشبع بيعي) 📉';
+        // Strategy: RSI < 30
+        sortedList = allStocksData.filter(s => {
+            return s.rsi_14 && s.rsi_14 < 30;
+        }).sort((a, b) => (a.rsi_14 || 0) - (b.rsi_14 || 0)).slice(0, 10);
+
+        if (sortedList.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">لا توجد أسهم في منطقة تشبع بيعي حالياً</td></tr>';
             return;
         }
     }
