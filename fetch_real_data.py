@@ -17,7 +17,10 @@ except:
     pass
 
 # Fix for SSL error (if needed)
-os.environ["CURL_CA_BUNDLE"] = r"c:\projects\swm\cacert.pem"
+# Fix for SSL if needed (Local Development only)
+cacert_path = r"c:\projects\swm\cacert.pem"
+if os.path.exists(cacert_path):
+    os.environ["CURL_CA_BUNDLE"] = cacert_path
 
 # 1. Initialize Firebase
 if not firebase_admin._apps:

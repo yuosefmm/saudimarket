@@ -8,7 +8,10 @@ import os
 import json
 
 # Fix for SSL error due to non-ASCII username path
-os.environ["CURL_CA_BUNDLE"] = r"c:\projects\swm\cacert.pem"
+# Fix for SSL error due to non-ASCII username path (Local only)
+cacert_path = r"c:\projects\swm\cacert.pem"
+if os.path.exists(cacert_path):
+    os.environ["CURL_CA_BUNDLE"] = cacert_path
 
 # Initialize Firebase Admin
 try:

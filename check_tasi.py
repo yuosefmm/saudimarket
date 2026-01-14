@@ -5,7 +5,10 @@ import os
 from datetime import datetime
 
 # Fix for SSL
-os.environ["CURL_CA_BUNDLE"] = r"c:\projects\swm\cacert.pem"
+# Fix for SSL if needed
+cacert_path = r"c:\projects\swm\cacert.pem"
+if os.path.exists(cacert_path):
+    os.environ["CURL_CA_BUNDLE"] = cacert_path
 
 def check_data():
     # Initialize Firebase

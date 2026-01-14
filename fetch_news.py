@@ -7,7 +7,10 @@ import os
 import json
 
 # Fix for SSL if needed
-os.environ["CURL_CA_BUNDLE"] = r"c:\projects\swm\cacert.pem"
+# Fix for SSL if needed (Local Development only)
+cacert_path = r"c:\projects\swm\cacert.pem"
+if os.path.exists(cacert_path):
+    os.environ["CURL_CA_BUNDLE"] = cacert_path
 
 # Initialize Firebase
 if not firebase_admin._apps:
