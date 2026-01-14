@@ -1,0 +1,28 @@
+name: Update Market News
+
+on:
+  schedule:
+    - cron: '30 6-15 * * 0-4' # Run hourly during market hours (approx) Sunday-Thursday
+  workflow_dispatch:      # Manual trigger
+
+jobs:
+  update-news:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install firebase-admin yfinance
+
+      - name: Run News Updater
+        env:
+          SERVICE_ACCOUNT_KEY: ${{ secrets.SERVICE_ACCOUNT_KEY }}
+        run: python fetch_news.py
