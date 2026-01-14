@@ -25,6 +25,21 @@ document.addEventListener('DOMContentLoaded', async () => {
             allStocksData.push(doc.data());
         });
 
+        // Find TASI for Header
+        const tasi = allStocksData.find(s => s.symbol === 'TASI' || s.name === 'TASI' || s.symbol === 'tasi');
+        if (tasi) {
+            const priceEl = document.getElementById('header-tasi-price');
+            const changeEl = document.getElementById('header-tasi-change');
+
+            if (priceEl && changeEl) {
+                priceEl.innerText = tasi.price.toFixed(2);
+                changeEl.innerText = `${tasi.change > 0 ? '+' : ''}${tasi.change.toFixed(2)} (${tasi.percent.toFixed(2)}%)`;
+                const colorVar = tasi.change >= 0 ? 'var(--up-color)' : 'var(--down-color)';
+                priceEl.style.color = colorVar;
+                changeEl.style.color = colorVar;
+            }
+        }
+
         // Initial Render (Matches Default Value 'gainers')
         updateView('gainers');
 
