@@ -702,6 +702,14 @@ function initChart() {
             DrawingManager.handleClick(param);
         });
 
+        // --- RESIZE OBSERVER (Responsive) ---
+        const resizeObserver = new ResizeObserver(entries => {
+            if (entries.length === 0 || !entries[0].contentRect) return;
+            const newRect = entries[0].contentRect;
+            chart.applyOptions({ width: newRect.width, height: newRect.height });
+        });
+        resizeObserver.observe(container);
+
         // Subscribe to move for Interactive Drawing
         chart.subscribeCrosshairMove((param) => {
             DrawingManager.handleMove(param);
@@ -761,13 +769,7 @@ function initChart() {
             recalcIndicators();
         };
 
-        const resizeObserver = new ResizeObserver(entries => {
-            if (entries.length === 0 || !entries[0].target) return;
-            const newRect = entries[0].contentRect;
-            if (newRect.width === 0 || newRect.height === 0) return;
-            chart.applyOptions({ width: newRect.width, height: newRect.height });
-        });
-        resizeObserver.observe(container);
+
 
         // --- LEGEND LOGIC ---
         const legend = document.getElementById('chart-legend');
@@ -799,6 +801,20 @@ function initChart() {
 
             if (validCrosshair && param.seriesData) {
                 candleData = param.seriesData.get(candleSeries);
+                // 5. Drawing Manager
+                drawingManager = new DrawingManager(chart, candleSeries);
+
+                // 6. Handle Resize
+                const resizeObserver = new ResizeObserver(entries => {
+                    if (entries.length === 0 || !entries[0].contentRect) return;
+                    const newRect = entries[0].contentRect;
+                    chart.applyOptions({ width: newRect.width, height: newRect.height });
+                });
+                resizeObserver.observe(container);
+
+                // Initial Resize
+                const rect = container.getBoundingClientRect();
+                chart.applyOptions({ width: rect.width, height: rect.height });
                 volumeData = param.seriesData.get(volumeSeries);
                 smaData = param.seriesData.get(smaSeries);
             }
