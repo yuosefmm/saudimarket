@@ -216,40 +216,58 @@ def convert_val(val):
     return float(val)
 
 # --- MAIN EXECUTION ---
-print("🚀 Starting Full Market Sync (yfinance + Technicals)...", flush=True)
 
-# Add TASI explicitly if not in list
-if 'TASI' not in stocks_map:
-    stocks_map['TASI'] = {
-        'symbol': 'TASI',
-        'yf_symbol': '^TASI.SR',
-        'name': 'المؤشر العام'
-    }
+# --- MAIN EXECUTION ---
 
-# Process TASI first
-if 'TASI' in stocks_map:
-    tasi_item = stocks_map.pop('TASI')
-    print("Processing TASI first...", flush=True)
-    try:
-        upload_stock_history('TASI', tasi_item, period='1y', should_clear=True)
-    except Exception as e:
-        print(f"Failed to process TASI: {e}", flush=True)
+# Check for Single Symbol Mode
+target_symbol = None
+if len(sys.argv) > 1:
+    arg = sys.argv[1]
+    if not arg.endswith('.py'):
+        target_symbol = arg
 
-# Process all stocks
-count_i = 0
-total = len(stocks_map)
-
-for symbol_id, stock_item in stocks_map.items():
-    count_i += 1
+if target_symbol:
+    print(f"🚀 Running Single Symbol Mode: {target_symbol}", flush=True)
     
-    # REMOVED LIMIT - PROCESS ALL
-    # if count_i > 3: 
-    #     continue
+    # Handle TASI
+    if target_symbol == 'TASI' or target_symbol == '^TASI.SR':
+        if 'TASI' in stocks_map:
+             try:
+                upload_stock_history('TASI', stocks_map['TASI'], period='1y', should_clear=True)
+             except Exception as e:
+                print(f"Failed to process TASI: {e}", flush=True)
+    
+    # Handle Other
+    elif target_symbol in stocks_map:
+        try:
+            upload_stock_history(target_symbol, stocks_map[target_symbol], period='1y', should_clear=True)
+        except Exception as e:
+            print(f"Failed to process {target_symbol}: {e}", flush=True)
+    else:
+        print(f"❌ Symbol {target_symbol} not found in ticker map.", flush=True)
 
-    # We use 1yr range to get history.
-    try:
-        upload_stock_history(symbol_id, stock_item, period='1y', should_clear=True)
-    except Exception as e:
-        print(f"Failed to process {symbol_id}: {e}", flush=True)
+else:
+    print("🚀 Starting Full Market Sync (yfinance + Technicals)...", flush=True)
+    
+    # Process TASI first
+    if 'TASI' in stocks_map:
+        tasi_item = stocks_map.pop('TASI')
+        print("Processing TASI first...", flush=True)
+        try:
+            upload_stock_history('TASI', tasi_item, period='1y', should_clear=True)
+        except Exception as e:
+            print(f"Failed to process TASI: {e}", flush=True)
 
-print("\n🎉 Full Sync Complete!", flush=True)
+    # Process all stocks
+    count_i = 0
+    
+    for symbol_id, stock_item in stocks_map.items():
+        count_i += 1
+        
+        # We use 1yr range to get history.
+        try:
+            upload_stock_history(symbol_id, stock_item, period='1y', should_clear=True)
+        except Exception as e:
+            print(f"Failed to process {symbol_id}: {e}", flush=True)
+
+print("\n🎉 Sync Complete!", flush=True)
