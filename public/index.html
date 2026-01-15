@@ -48,6 +48,9 @@
                     <span class="stat-label">TASI</span>
                     <span class="stat-value up" id="header-tasi-price">---</span>
                     <span class="stat-value up" id="header-tasi-change">---</span>
+                    <button id="btn-update-market" title="تحديث بيانات الشركات (7 أيام)"
+                        style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; color: #fff; cursor: pointer; font-size: 0.9em; padding: 2px 6px; margin-right: 10px;">🔄
+                        تحديث</button>
                 </div>
                 <div class="stat-item">
                     <span class="stat-label">Status</span>
@@ -102,7 +105,7 @@
 
                     <!-- Indicators Dropdown -->
                     <div class="dropdown">
-                       <button class="control-btn dropbtn" onclick="toggleDropdown()">مؤشرات ▾</button>
+                        <button class="control-btn dropbtn" onclick="toggleDropdown()">مؤشرات ▾</button>
                         <div class="dropdown-content" id="indicators-dropdown">
                             <label><input type="checkbox" id="chk-vol" checked onchange="toggleIndicator('VOL')">
                                 Volume</label>

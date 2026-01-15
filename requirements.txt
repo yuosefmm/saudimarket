@@ -2,3 +2,6 @@ firebase-admin
 yfinance
 pandas
 numpy
+
+flask
+flask-cors

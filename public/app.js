@@ -93,6 +93,28 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
+        // Update Button Logic
+        const btnUpdate = document.getElementById('btn-update-market');
+        if (btnUpdate) {
+            btnUpdate.addEventListener('click', async () => {
+                if (confirm('هل تريد تحديث بيانات جميع الشركات لآخر 7 أيام؟\n(يتطلب تشغيل الخادم المحلي server.py)')) {
+                    try {
+                        window.showToast('جاري الاتصال بالخادم...');
+                        const res = await fetch('http://localhost:5000/api/update-market?days=7', { method: 'POST' });
+                        if (res.ok) {
+                            const data = await res.json();
+                            window.showToast('✅ ' + (data.message || 'تم بدء التحديث'));
+                        } else {
+                            window.showToast('❌ خطأ في الخادم');
+                        }
+                    } catch (e) {
+                        console.error(e);
+                        window.showToast('⚠️ فشل الاتصال: تأكد من تشغيل server.py');
+                    }
+                }
+            });
+        }
+
         initChart();
 
     } catch (e) {

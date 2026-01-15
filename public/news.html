@@ -107,8 +107,15 @@
 
         <!-- News Feed -->
         <main class="news-container" id="news-feed">
-            <div style="text-align: center; color: var(--text-muted); padding-top: 50px;">
-                جاري تحميل الأخبار... 📡
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0; color: #fff;">آخر الأخبار</h2>
+                <button class="control-btn" id="btn-update-news" title="تحديث أخبار اليوم">🔄 تحديث (اليوم)</button>
+            </div>
+
+            <div id="news-list">
+                <div style="text-align: center; color: var(--text-muted); padding-top: 50px;">
+                    جاري تحميل الأخبار... 📡
+                </div>
             </div>
         </main>
     </div>

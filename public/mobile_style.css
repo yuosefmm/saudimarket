@@ -1,0 +1,156 @@
+/* --- MOBILE RESPONSIVENESS (Max Width 768px) --- */
+@media screen and (max-width: 768px) {
+
+    /* 1. Global Reset for Space */
+    /* Remove body overflow hidden to allow native scroll if needed, 
+       but for this "App" feel we keep it and stack panels */
+    .app-shell {
+        height: 100vh;
+        /* Keep fixed height */
+    }
+
+    /* 2. Header Adjustment */
+    .terminal-header {
+        padding: 0 10px;
+        justify-content: space-between;
+        height: 54px;
+        /* Slightly taller if needed, or keep compact */
+    }
+
+    .brand span:nth-child(2) {
+        display: none;
+        /* Hide 'Al-Mutadawil' text if too tight, or keep it */
+    }
+
+    .main-nav {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        gap: 10px !important;
+        font-size: 0.85rem;
+    }
+
+    .market-status {
+        display: none;
+        /* Hide TASI ticker in header to save space, it's on the chart anyway */
+    }
+
+    /* 3. Stacked Layout */
+    .terminal-grid {
+        display: flex;
+        flex-direction: column;
+        grid-template-columns: 1fr;
+        /* Reset grid */
+    }
+
+    /* 4. Table Panel (Top Half) */
+    .market-panel {
+        height: 35vh;
+        /* 35% Height */
+        border-bottom: 1px solid var(--border-subtle);
+        border-right: none;
+        /* Remove desktop border */
+    }
+
+    /* Hide less important columns */
+    .data-table th:nth-child(2),
+    .data-table td:nth-child(2),
+    /* Symbol */
+    .data-table th:nth-child(4),
+    .data-table td:nth-child(4),
+    /* Change */
+    .data-table th:nth-child(6),
+    .data-table td:nth-child(6),
+    /* High */
+    .data-table th:nth-child(7),
+    .data-table td:nth-child(7)
+
+    /* Low */
+        {
+        display: none;
+    }
+
+    /* Adjust remaining columns */
+    .data-table th,
+    .data-table td {
+        padding: 6px 8px;
+        font-size: 13px;
+    }
+
+    /* 5. Chart Panel (Bottom Half) */
+    .chart-panel {
+        height: 65vh;
+        /* 65% Height */
+        flex: 1;
+    }
+
+    #main_chart_container {
+        right: 0;
+        /* Remove right space used for vertical toolbar */
+        left: 0;
+        bottom: 40px;
+        /* Space for horizontal toolbar at bottom */
+    }
+
+    /* 6. Chart Controls (Toolbar) */
+    .chart-controls {
+        position: relative;
+        /* Unlock from absolute */
+        top: 0;
+        left: 0;
+        width: 100%;
+        overflow-x: auto;
+        /* Horizontal Scroll */
+        white-space: nowrap;
+        border-bottom: var(--border-subtle);
+        background: var(--bg-header);
+        padding: 6px;
+        justify-content: flex-start;
+        /* Align left */
+    }
+
+    /* Hide some timeframes to save space */
+    .control-btn {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+
+    /* 7. Drawing Toolbar (Move to Bottom) */
+    .side-toolbar {
+        position: absolute;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 40px;
+        /* Fixed height */
+        flex-direction: row;
+        /* Horizontal */
+        padding-top: 0;
+        border-left: none;
+        border-top: var(--border-subtle);
+        gap: 20px;
+    }
+
+    .toolbar-separator {
+        display: none;
+        /* Hide separators in cramped spaces */
+    }
+
+    /* 8. Legend */
+    .chart-legend {
+        top: 50px;
+        /* Push down below new controls row */
+        right: 10px;
+        left: 10px;
+        /* Full width-ish */
+        font-size: 11px;
+        background: rgba(15, 23, 42, 0.6);
+        /* More visible bg */
+    }
+
+    /* Analysis Page Grid */
+    .analysis-container {
+        grid-template-columns: 1fr !important;
+    }
+}

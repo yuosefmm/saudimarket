@@ -29,7 +29,7 @@ if not firebase_admin._apps:
 
 db = firestore.client()
 
-def fetch_and_store_news():
+def fetch_and_store_news(today_only=False):
     print("Fetching News...")
     
     # We can fetch news from TASI and maybe some major movers
@@ -70,6 +70,12 @@ def fetch_and_store_news():
     # Sort by date
     news_items.sort(key=lambda x: x['published'], reverse=True)
     
+    # Filter for Today Only
+    if today_only:
+        print("Filtering for Today's news only...")
+        today_date = datetime.now().date()
+        news_items = [item for item in news_items if item['published'].date() == today_date]
+    
     print(f"Found {len(news_items)} unique news items.")
 
     # Store in Firestore
@@ -104,5 +110,10 @@ def fetch_and_store_news():
         else:
             print("No new items to save.")
 
-if __name__ == "__main__":
-    fetch_and_store_news()
+    if len(sys.argv) > 1 and sys.argv[1] == '--today-only':
+        today_only = True
+    else:
+        today_only = False
+        
+    fetch_and_store_news(today_only=today_only)
+

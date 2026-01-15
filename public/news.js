@@ -18,7 +18,42 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 2. Fetch News
     fetchNews();
+
+    // 3. Update Button
+    const btnUpdate = document.getElementById('btn-update-news');
+    if (btnUpdate) {
+        btnUpdate.addEventListener('click', async () => {
+            if (confirm('هل تريد تحديث أخبار اليوم من المصدر؟\n(يتطلب تشغيل server.py)')) {
+                try {
+                    showToast('جاري الاتصال بالخادم...');
+                    const res = await fetch('http://localhost:5000/api/update-news?today=true', { method: 'POST' });
+                    if (res.ok) {
+                        showToast('✅ تم بدء التحديث');
+                        // Refresh view after a delay
+                        setTimeout(fetchNews, 5000);
+                    } else {
+                        showToast('❌ خطأ في الخادم');
+                    }
+                } catch (e) {
+                    console.error(e);
+                    showToast('⚠️ فشل الاتصال بالخادم');
+                }
+            }
+        });
+    }
 });
+
+// Helper: Toast
+window.showToast = (msg) => {
+    const t = document.createElement('div');
+    t.className = 'toast-msg';
+    t.innerText = msg;
+    document.body.appendChild(t);
+    setTimeout(() => {
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 500);
+    }, 2000);
+};
 
 async function fetchTASI() {
     try {
@@ -44,7 +79,7 @@ async function fetchTASI() {
 }
 
 async function fetchNews() {
-    const container = document.getElementById('news-feed');
+    const container = document.getElementById('news-list');
     try {
         const db = firebase.firestore();
         // Fetch latest 20 news items

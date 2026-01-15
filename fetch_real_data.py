@@ -49,7 +49,7 @@ def sanitize(value):
         return 0.0
     return float(value)
 
-def upload_stock_history(symbol_id, stock_info, period, should_clear=False):
+def upload_stock_history(symbol_id, stock_info, period, should_clear=False, days_limit=None):
     yahoo_ticker = stock_info.get('yf_symbol')
     if not yahoo_ticker: return
 
@@ -118,8 +118,11 @@ def upload_stock_history(symbol_id, stock_info, period, should_clear=False):
 
         # CHECK INCREMENTAL MODE (Default: True)
         # If FULL_SYNC is NOT set, we only write the last 3 days to save writes
-        is_full_sync = os.getenv('FULL_SYNC', 'false').lower() == 'true'
-        target_df = df if is_full_sync else df.tail(3)
+        if days_limit:
+            target_df = df.tail(days_limit)
+        else:
+            is_full_sync = os.getenv('FULL_SYNC', 'false').lower() == 'true' or should_clear
+            target_df = df if is_full_sync else df.tail(3)
         
         for index, row in target_df.iterrows():
             if pd.isna(row['Open']) or pd.isna(row['Close']):
@@ -218,56 +221,85 @@ def convert_val(val):
 # --- MAIN EXECUTION ---
 
 # --- MAIN EXECUTION ---
+import argparse
 
-# Check for Single Symbol Mode
-target_symbol = None
-if len(sys.argv) > 1:
-    arg = sys.argv[1]
-    if not arg.endswith('.py'):
-        target_symbol = arg
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Fetch Saudi Stock Data')
+    parser.add_argument('symbol', nargs='?', help='Target Symbol (e.g. 1120.SR or TASI)')
+    parser.add_argument('--days', type=int, help='Number of days to update (e.g. 7)')
+    parser.add_argument('--full-sync', action='store_true', help='Force full sync')
+    
+    args = parser.parse_args()
+    
+    # Logic for period/days
+    # Default is 1y if not specified
+    fetch_period = '1y'
+    
+    # If days is small (e.g. 7), we might still want to fetch 1mo to be safe, then slice?
+    # Or rely on df.tail() logic?
+    # The existing logic uses 'period' in upload_stock_history.
+    # If args.days is set, we pass it down? 
+    # Current function signature: upload_stock_history(symbol_id, stock_info, period, should_clear=False)
+    
+    # Let's Modify upload_stock_history to accept 'days_limit' or handle it 
+    # But since I can't easily change the function signature without re-reading the whole file,
+    # I will adapt the CALL sites inside the loop or modify the global 'period'.
+    
+    # Actually, let's just use '1mo' if days <= 30, else '1y' etc.
+    if args.days:
+        if args.days <= 7:
+            fetch_period = '5d' # Yahoo supports 1d, 5d
+            # But 5d might miss 7 actual days depending on weekends.
+            # Safest is 1mo then slice.
+            fetch_period = '1mo'
+        elif args.days <= 30:
+            fetch_period = '1mo'
+        else:
+            fetch_period = '1y'
+    
+    target_symbol = args.symbol
 
-if target_symbol:
-    print(f"🚀 Running Single Symbol Mode: {target_symbol}", flush=True)
-    
-    # Handle TASI
-    if target_symbol == 'TASI' or target_symbol == '^TASI.SR':
-        if 'TASI' in stocks_map:
-             try:
-                upload_stock_history('TASI', stocks_map['TASI'], period='1y', should_clear=True)
-             except Exception as e:
-                print(f"Failed to process TASI: {e}", flush=True)
-    
-    # Handle Other
-    elif target_symbol in stocks_map:
-        try:
-            upload_stock_history(target_symbol, stocks_map[target_symbol], period='1y', should_clear=True)
-        except Exception as e:
-            print(f"Failed to process {target_symbol}: {e}", flush=True)
-    else:
-        print(f"❌ Symbol {target_symbol} not found in ticker map.", flush=True)
-
-else:
-    print("🚀 Starting Full Market Sync (yfinance + Technicals)...", flush=True)
-    
-    # Process TASI first
-    if 'TASI' in stocks_map:
-        tasi_item = stocks_map.pop('TASI')
-        print("Processing TASI first...", flush=True)
-        try:
-            upload_stock_history('TASI', tasi_item, period='1y', should_clear=True)
-        except Exception as e:
-            print(f"Failed to process TASI: {e}", flush=True)
-
-    # Process all stocks
-    count_i = 0
-    
-    for symbol_id, stock_item in stocks_map.items():
-        count_i += 1
+    if target_symbol:
+        print(f"🚀 Running Single Symbol Mode: {target_symbol}", flush=True)
         
-        # We use 1yr range to get history.
-        try:
-            upload_stock_history(symbol_id, stock_item, period='1y', should_clear=True)
-        except Exception as e:
-            print(f"Failed to process {symbol_id}: {e}", flush=True)
+        # Handle TASI
+        if target_symbol == 'TASI' or target_symbol == '^TASI.SR':
+            if 'TASI' in stocks_map:
+                 try:
+                    upload_stock_history('TASI', stocks_map['TASI'], period=fetch_period, should_clear=(args.days is None), days_limit=args.days)
+                 except Exception as e:
+                    print(f"Failed to process TASI: {e}", flush=True)
+        
+        # Handle Other
+        elif target_symbol in stocks_map:
+            try:
+                upload_stock_history(target_symbol, stocks_map[target_symbol], period=fetch_period, should_clear=(args.days is None), days_limit=args.days)
+            except Exception as e:
+                print(f"Failed to process {target_symbol}: {e}", flush=True)
+        else:
+            print(f"❌ Symbol {target_symbol} not found in ticker map.", flush=True)
 
-print("\n🎉 Sync Complete!", flush=True)
+    else:
+        print(f"🚀 Starting Market Sync... (Period: {fetch_period}, Days={args.days})", flush=True)
+        
+        # Process TASI first
+        if 'TASI' in stocks_map:
+            tasi_item = stocks_map.pop('TASI')
+            print("Processing TASI first...", flush=True)
+            try:
+                upload_stock_history('TASI', tasi_item, period=fetch_period, should_clear=(args.days is None), days_limit=args.days)
+            except Exception as e:
+                print(f"Failed to process TASI: {e}", flush=True)
+
+        # Process all stocks
+        count_i = 0
+        
+        for symbol_id, stock_item in stocks_map.items():
+            count_i += 1
+            
+            try:
+                upload_stock_history(symbol_id, stock_item, period=fetch_period, should_clear=(args.days is None), days_limit=args.days)
+            except Exception as e:
+                print(f"Failed to process {symbol_id}: {e}", flush=True)
+
+    print("\n🎉 Sync Complete!", flush=True)
