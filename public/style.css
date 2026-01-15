@@ -486,7 +486,7 @@ body {
     .terminal-header {
         padding: 0 10px;
         justify-content: space-between;
-        height: 54px;
+        height: 48px;
     }
 
     .brand span:nth-child(2) {
@@ -511,10 +511,10 @@ body {
         grid-template-columns: 1fr;
     }
 
-    /* Table Panel (Top Half - REDUCED HEIGHT) */
+    /* Table Panel (Top - DOMINANT) */
     .market-panel {
-        height: 25vh;
-        /* REDUCED to 25% */
+        height: 65vh;
+        /* 65% Height for Table */
         border-bottom: 1px solid var(--border-subtle);
         border-right: none;
     }
@@ -543,23 +543,26 @@ body {
         font-size: 13px;
     }
 
-    /* Chart Panel (Bottom Half - INCREASED HEIGHT) */
+    /* Chart Panel (Bottom - SMALLER) */
     .chart-panel {
-        height: 75vh;
-        /* INCREASED to 75% */
+        height: 35vh;
+        /* 35% Height for Chart */
         flex: 1;
+        min-height: 200px;
     }
 
     #main_chart_container {
         right: 0;
         left: 0;
-        bottom: 50px;
-        /* More space for horizontal toolbar */
+        bottom: 0;
+        /* Full height of panel */
+        top: 35px;
+        /* Space for top control bar only */
     }
 
-    /* Chart Controls */
+    /* Chart Controls (Keep Timeframes, Hide fancy stuff) */
     .chart-controls {
-        position: relative;
+        position: absolute;
         top: 0;
         left: 0;
         width: 100%;
@@ -567,46 +570,35 @@ body {
         white-space: nowrap;
         border-bottom: var(--border-subtle);
         background: var(--bg-header);
-        padding: 6px;
+        padding: 4px;
         justify-content: flex-start;
+        height: 35px;
+        z-index: 50;
     }
 
     .control-btn {
-        padding: 6px 10px;
-        font-size: 13px;
+        padding: 4px 8px;
+        font-size: 11px;
     }
 
-    /* Drawing Toolbar (Bottom) */
+    /* HIDE Unnecessary Features on Mobile */
+
+    /* 1. Hide Drawing Sidebar */
     .side-toolbar {
-        position: absolute;
-        top: auto;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        height: 50px;
-        flex-direction: row;
-        padding-top: 0;
-        border-left: none;
-        border-top: var(--border-subtle);
-        gap: 15px;
-        justify-content: center;
+        display: none !important;
     }
 
-    .toolbar-separator {
+    /* 2. Hide Legend (Too much text) */
+    .chart-legend {
+        display: none !important;
+    }
+
+    /* 3. Hide Fullscreen button on mobile chart */
+    .chart-controls .control-btn:last-child {
         display: none;
     }
 
-    /* Legend */
-    .chart-legend {
-        top: 100px;
-        /* Push down way below controls */
-        right: 10px;
-        left: 10px;
-        font-size: 11px;
-        background: rgba(15, 23, 42, 0.7);
-    }
-
+    /* Analysis Page Grid */
     .analysis-container {
         grid-template-columns: 1fr !important;
     }
