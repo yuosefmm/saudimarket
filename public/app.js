@@ -707,6 +707,8 @@ function initChart() {
             if (entries.length === 0 || !entries[0].contentRect) return;
             const newRect = entries[0].contentRect;
             chart.applyOptions({ width: newRect.width, height: newRect.height });
+            // FORCE RE-RENDER / FIT
+            chart.timeScale().fitContent();
         });
         resizeObserver.observe(container);
 
