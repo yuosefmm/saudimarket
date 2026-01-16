@@ -1,3 +1,4 @@
+print("DEBUG: Starting fetch_news.py...", flush=True)
 import firebase_admin
 from firebase_admin import credentials, firestore
 import yfinance as yf
@@ -32,20 +33,39 @@ db = firestore.client()
 def fetch_and_store_news(today_only=False):
     print("Fetching News...")
     
-    # We can fetch news from TASI and maybe some major movers
-    tickers_to_check = ['^TASI.SR', '2222.SR', '1120.SR'] # TASI, Aramco, Rajhi
+    # tickers_to_check = ['^TASI.SR', '2222.SR', '1120.SR']
+    tickers_to_check = ['1120.SR'] # DEBUG: Single ticker
     
     news_items = []
     seen_links = set()
 
     for symbol in tickers_to_check:
         try:
-            print(f"  Checking {symbol}...")
+            print(f"  Checking {symbol}...", flush=True)
             ticker = yf.Ticker(symbol)
             news = ticker.news
             
             for item in news:
-                link = item.get('link')
+                print(f"DEBUG ITEM KEYS: {item.keys() if isinstance(item, dict) else type(item)}")
+                if isinstance(item, dict) and 'content' in item:
+                    print(f"DEBUG CONTENT KEYS: {item['content'].keys()}")
+                
+                # Handle nested structure (New yfinance)
+                content = item.get('content', item) # Fallback to item itself if content not found
+                
+                # Extract fields with fallbacks
+                title = content.get('title')
+                
+                # Link handling
+                link = content.get('link')
+                if not link and 'clickThroughUrl' in content:
+                    link = content['clickThroughUrl'].get('url')
+                
+                # Publisher handling
+                publisher = content.get('publisher')
+                if not publisher and 'provider' in content:
+                    publisher = content['provider'].get('displayName')
+                
                 if link in seen_links:
                     continue
                 
@@ -53,16 +73,21 @@ def fetch_and_store_news(today_only=False):
                 
                 # Convert timestamp
                 pub_time = datetime.now()
-                if 'providerPublishTime' in item:
-                    pub_time = datetime.fromtimestamp(item['providerPublishTime'])
+                if 'pubDate' in content:
+                    try:
+                        pub_time = datetime.strptime(content['pubDate'], "%Y-%m-%dT%H:%M:%SZ")
+                    except:
+                        pass
+                elif 'providerPublishTime' in content:
+                    pub_time = datetime.fromtimestamp(content['providerPublishTime'])
                 
                 news_items.append({
-                    'title': item.get('title'),
-                    'publisher': item.get('publisher'),
+                    'title': title,
+                    'publisher': publisher,
                     'link': link,
                     'published': pub_time,
-                    'uuid': item.get('uuid'),
-                    'type': item.get('type')
+                    'uuid': item.get('id') or item.get('uuid'),
+                    'type': content.get('type')
                 })
         except Exception as e:
             print(f"  Error fetching {symbol}: {e}")
@@ -110,6 +135,7 @@ def fetch_and_store_news(today_only=False):
         else:
             print("No new items to save.")
 
+if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == '--today-only':
         today_only = True
     else:

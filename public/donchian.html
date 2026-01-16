@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWM - استراتيجية دونشيان</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css?v=1.2.9">
+    <style>
+        /* Specific Styles for Donchian Page */
+        .donchian-container {
+            padding: 20px;
+            height: calc(100vh - 80px);
+            /* Adjust for header */
+            overflow-y: auto;
+        }
+
+        .card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 200px;
+        }
+
+        .strategy-header {
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .strategy-title {
+            font-size: 1.2rem;
+            color: #4caf50;
+            /* Green for breakout */
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .strategy-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            max-width: 800px;
+        }
+
+        .stats-badge {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4caf50;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(76, 175, 80, 0.2);
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: right;
+            padding: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        .price-val {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .col-entry {
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .col-stop {
+            color: #f44336;
+        }
+    </style>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+
+<body>
+
+    <div class="app-shell">
+        <!-- Top Navigation -->
+        <header class="terminal-header">
+            <div class="brand">
+                <span class="brand-icon">⚡</span>
+                <div style="display: flex; flex-direction: column;">
+                    <span style="line-height: 1;">المتداول</span>
+                    <span style="font-size: 10px; opacity: 0.6; font-family: monospace;">v1.2.18</span>
+                </div>
+            </div>
+
+            <nav class="main-nav" style="margin-left: auto; margin-right: 20px; display: flex; gap: 15px;">
+                <a href="index.html" style="color: #fff; text-decoration: none; opacity: 0.8;">الرئيسية</a>
+                <a href="news.html" style="color: #fff; text-decoration: none; opacity: 0.8;">الأخبار</a>
+                <a href="analysis.html" style="color: #fff; text-decoration: none; opacity: 0.8;">التحليل</a>
+                <a href="#"
+                    style="color: #fff; text-decoration: none; opacity: 0.8; font-weight: bold; border-bottom: 2px solid #4caf50;">استراتيجية
+                    دونشيان</a>
+            </nav>
+
+            <div class="market-status">
+                <div class="stat-item">
+                    <span class="stat-label">Status</span>
+                    <span class="stat-value" style="color: var(--up-color)">● Connected</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="donchian-container">
+            <div class="card">
+                <div class="strategy-header">
+                    <h1 class="strategy-title">
+                        اختراق قناة دونشيان (Donchian Breakout)
+                        <span class="stats-badge" id="match-count-badge">0 فرص</span>
+                    </h1>
+                    <p class="strategy-desc">
+                        تقوم هذه الاستراتيجية برصد الأسهم التي اخترقت <strong>الحد العلوي لقناة 20 يوم</strong> (أعلى
+                        سعر في 20 يوم)،
+                        مدعومة <strong>بسيولة عالية</strong> (أكبر من 150% من متوسط 10 أيام)،
+                        مع شرط وجود السعر فوق <strong>متوسط 50 يوم</strong> لضمان الاتجاه العام الصاعد.
+                    </p>
+                    <div style="margin-top: 10px; font-size: 0.8rem; color: #666;">
+                        آخر تحديث: <span id="last-update-time">-</span>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 15px; text-align: left;">
+                    <button class="control-btn" id="btn-run-update"
+                        style="background: #4caf50; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                        🔄 تحديث البيانات
+                    </button>
+                    <span style="font-size: 0.75rem; color: #888; margin-right: 10px;">
+                        (يتطلب تشغيل السيرفر المحلي)
+                    </span>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>الشركة</th>
+                                <th style="text-align: left;">سعر الدخول</th>
+                                <th style="text-align: left;">وقف الخسارة</th>
+                                <th style="text-align: left;">آخر سعر</th>
+                                <th style="text-align: left;">التغير %</th>
+                                <th style="text-align: left;">الفوليوم</th>
+                            </tr>
+                        </thead>
+                        <tbody id="donchian-table-body">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 30px; color: #888;">جاري تحميل
+                                    البيانات...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Application Logic -->
+    <script src="donchian.js"></script>
+</body>
+
+</html>

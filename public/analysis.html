@@ -78,6 +78,47 @@
         .val-down {
             color: var(--down-color);
         }
+
+        /* Filter Buttons Grid */
+        .filter-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 20px 20px 10px 20px;
+        }
+
+        .filter-btn {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: #ccc;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+            /* Rectangular with slight roundness */
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .filter-btn.active {
+            background: rgba(56, 189, 248, 0.15);
+            /* Semi-transparent accent */
+            color: var(--text-accent) !important;
+            font-weight: bold;
+            border: 1px solid var(--text-accent);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+        }
     </style>
 
     <!-- Firebase SDKs -->
@@ -103,7 +144,8 @@
                 <a href="index.html" style="color: #fff; text-decoration: none; opacity: 0.8;">الرئيسية</a>
                 <a href="news.html" style="color: #fff; text-decoration: none; opacity: 0.8;">الأخبار</a>
                 <a href="#"
-                    style="color: #fff; text-decoration: none; opacity: 0.8; font-weight: bold; border-bottom: 2px solid var(--accent-color);">التحليل</a>
+                    style="color: #fff; text-decoration: none; opacity: 0.8; font-weight: bold; border-bottom: 2px solid var(--text-accent);">التحليل</a>
+                <a href="donchian.html" style="color: #fff; text-decoration: none; opacity: 0.8;">استراتيجية دونشيان</a>
             </nav>
 
             <div class="market-status">
@@ -119,29 +161,49 @@
             </div>
         </header>
 
-        <!-- Control Bar -->
-        <div class="control-bar" style="padding: 20px 20px 10px 20px; display: flex; justify-content: flex-start;">
-            <div class="custom-select" style="position: relative; width: 220px;">
-                <select id="analysis-selector" class="dropdown-select"
-                    style="width: 100%; padding: 8px 12px; background: #334155; color: #fff; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; cursor: pointer; font-size: 14px; outline: none;">
-                    <option value="gainers">الأكثر ارتفاعاً 🚀</option>
-                    <option value="losers">الأكثر انخفاضاً 🔻</option>
-                    <option value="volume">الأعلى سيولة 💰</option>
-                    <option value="speculative">فرص مضاربية (ذهبية) ✨</option>
-                    <option value="reversal">بداية انعكاس إيجابي 🔄</option>
-                    <option value="breakout">اختراق قوي (سيولة) 💥</option>
-                    <option value="overbought">تضخم شرائي (حذر) ⚠️</option>
-                </select>
-            </div>
+        <!-- Filter Buttons -->
+        <div class="filter-grid" id="filter-buttons">
+            <button class="filter-btn active" data-mode="gainers">الأكثر ارتفاعاً 🚀</button>
+            <button class="filter-btn" data-mode="losers">الأكثر انخفاضاً 🔻</button>
+            <button class="filter-btn" data-mode="volume">الأعلى سيولة 💰</button>
+            <button class="filter-btn" data-mode="breakout">اختراق قوي (سيولة) 💥</button>
+            <button class="filter-btn" data-mode="speculative">فرص مضاربية (ذهبية) ✨</button>
+            <button class="filter-btn" data-mode="reversal">بداية انعكاس إيجابي 🔄</button>
+            <button class="filter-btn" data-mode="morning_star">نموذج الصباح (ارتداد) 🌅</button>
+            <button class="filter-btn" data-mode="donchian_breakout">اختراق قناة دونشيان 📈</button>
+            <button class="filter-btn" data-mode="vwap_bounce">ارتكاز VWAP 🎯</button>
+            <button class="filter-btn" data-mode="bullish_div">دايفرجنس إيجابي 🟢</button>
+            <button class="filter-btn" data-mode="overbought">تضخم شرائي (حذر) ⚠️</button>
         </div>
 
         <!-- Analysis Dashboard -->
         <main class="analysis-container" style="padding: 0 20px 20px 20px;">
             <div class="card"
-                style="min-height: 400px; height: calc(100vh - 140px); overflow: hidden; display: flex; flex-direction: column;">
-                <div class="card-header" id="table-title"
-                    style="font-size: 14px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    الأكثر ارتفاعاً 🚀
+                style="min-height: 400px; height: calc(100vh - 200px); overflow: hidden; display: flex; flex-direction: column;">
+
+                <!-- Title removed as per request -->
+
+
+                <!-- Strategy Info & Stats -->
+                <div id="strategyInfo"
+                    style="display:none; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+                        <div style="flex: 1; min-width: 250px;">
+                            <h3 id="strategyTitle" style="margin: 0 0 8px 0; color: #4caf50; font-size: 1rem;"></h3>
+                            <p id="strategyDesc" style="margin: 0; color: #ccc; font-size: 0.85rem; line-height: 1.4;">
+                            </p>
+                        </div>
+                        <div
+                            style="text-align: left; min-width: 140px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px;">
+                            <div style="font-size: 0.8rem; color: #888;">آخر تحديث: <span id="lastUpdate"
+                                    style="color: #fff;">-</span></div>
+                            <div style="margin-top: 4px; font-size: 0.85rem;">
+                                <span style="color: #4caf50;">✔ <span id="matchCount">0</span></span> |
+                                <span style="color: #666;">❌ <span id="unmatchCount">0</span></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="table-wrapper" style="flex: 1; overflow-y: auto;">

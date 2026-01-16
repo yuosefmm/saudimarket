@@ -278,6 +278,10 @@ body {
 }
 
 /* Fullscreen Utilities */
+.font-mono {
+    font-family: var(--font-mono);
+}
+
 .fullscreen {
     position: fixed !important;
     top: 0;

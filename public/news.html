@@ -17,9 +17,10 @@
     <link rel="stylesheet" href="style.css?v=1.2.9">
     <style>
         .news-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+            max-width: 100%;
+            /* Full Width */
+            margin: 0;
+            padding: 10px;
             height: calc(100vh - 60px);
             overflow-y: auto;
         }
@@ -90,6 +91,7 @@
                 <a href="#"
                     style="color: #fff; text-decoration: none; opacity: 0.8; font-weight: bold; border-bottom: 2px solid var(--accent-color);">الأخبار</a>
                 <a href="analysis.html" style="color: #fff; text-decoration: none; opacity: 0.8;">التحليل</a>
+                <a href="donchian.html" style="color: #fff; text-decoration: none; opacity: 0.8;">استراتيجية دونشيان</a>
             </nav>
 
             <div class="market-status">
@@ -109,7 +111,6 @@
         <main class="news-container" id="news-feed">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2 style="margin: 0; color: #fff;">آخر الأخبار</h2>
-                <button class="control-btn" id="btn-update-news" title="تحديث أخبار اليوم">🔄 تحديث (اليوم)</button>
             </div>
 
             <div id="news-list">

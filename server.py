@@ -55,22 +55,7 @@ def update_market():
     
     return jsonify({"message": f"Market update started for last {days} days."})
 
-@app.route('/api/update-news', methods=['POST'])
-def update_news():
-    today_only = request.args.get('today', 'true').lower() == 'true'
-    
-    args = []
-    if today_only:
-        args.append("--today-only")
-        
-    print(f"Update News Request: TodayOnly={today_only}")
-
-    def task():
-        run_script("fetch_news.py", args)
-        
-    threading.Thread(target=task).start()
-    
-    return jsonify({"message": "News update started."})
+    return jsonify({"message": f"Market update started for last {days} days."})
 
 if __name__ == '__main__':
     print("Starting Local SWM Server on port 5000...")
