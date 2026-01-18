@@ -5,9 +5,19 @@ import threading
 import sys
 import os
 
-app = Flask(__name__)
-# Enable CORS for all domains to allow fetch from localhost UI
+app = Flask(__name__, static_folder='public', static_url_path='')
+# Enable CORS for all domains
 CORS(app) 
+
+@app.route('/')
+def serve_index():
+    return app.send_static_file('index.html')
+
+@app.route('/<path:path>')
+def serve_static(path):
+    if os.path.exists(os.path.join('public', path)):
+         return app.send_static_file(path)
+    return jsonify({"error": "File not found"}), 404 
 
 # Ensure correct path to python interpreter
 PYTHON_EXEC = sys.executable
@@ -49,7 +59,7 @@ def update_market():
     # We should return "Started" instantly.
     
     def task():
-        run_script("fetch_real_data.py", ["--days", str(days)])
+        run_script("fetch_updates.py")
         
     threading.Thread(target=task).start()
     

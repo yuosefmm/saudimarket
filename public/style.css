@@ -300,35 +300,46 @@ body {
     /* LTR position, check RTL needs */
     z-index: 30;
     display: flex;
-    gap: 4px;
+    gap: 2px;
+    /* Reduced gap */
     background: var(--bg-panel);
-    padding: 4px;
+    padding: 2px;
+    /* Reduced padding */
     border-radius: 4px;
     border: var(--border-subtle);
+    align-items: center;
 }
 
-/* Legend: Floating info box */
+/* Legend: Floating info box (Moved Left) */
 .chart-legend {
     position: absolute;
-    top: 10px;
-    /* Aligned with toolbar */
-    right: 120px;
+    top: 50px;
+    /* Below toolbar */
+    left: 20px;
+    /* Moves to LEFT side */
+    right: auto;
+    /* Reset right */
     z-index: 20;
     pointer-events: none;
-    background: rgba(15, 23, 42, 0.1);
-    backdrop-filter: blur(4px);
-    padding: 8px 12px;
-    border-radius: 6px;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(2px);
+    padding: 4px 8px;
+    border-radius: 4px;
     border: 1px solid rgba(255, 255, 255, 0.05);
-    min-width: 180px;
-    text-align: right;
+    min-width: 140px;
+    text-align: left;
+    /* LTR alignment for numbers? Or RTL? Keep consistent */
+    direction: ltr;
+    /* Force LTR for label: value consistency */
     font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
 }
 
 .legend-item {
     display: flex;
-    gap: 12px;
-    margin-bottom: 4px;
+    gap: 8px;
+    /* Smaller gap */
+    margin-bottom: 2px;
 }
 
 .legend-label {
@@ -342,20 +353,30 @@ body {
 
 .control-btn {
     background: transparent;
-    border: none;
+    border: 1px solid transparent;
+    /* Prepare for border change */
     color: var(--text-secondary);
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: 2px 8px;
+    /* Smaller padding */
+    border-radius: 3px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 11px;
+    /* Smaller font */
     font-weight: 600;
+    transition: all 0.2s;
 }
 
-.control-btn:hover,
+.control-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+}
+
 .control-btn.active,
 .dropdown:hover .dropbtn {
-    background: var(--bg-app);
-    color: var(--text-primary);
+    background: #2962FF !important;
+    /* Distinct Blue */
+    color: #ffffff !important;
+    border-color: #2962FF !important;
 }
 
 .toolbar-separator {

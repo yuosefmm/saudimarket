@@ -121,6 +121,9 @@
         }
     </style>
 
+    <!-- Lightweight Charts -->
+    <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
+
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -129,7 +132,6 @@
 <body>
 
     <div class="app-shell">
-        <!-- Top Navigation -->
         <!-- Top Navigation -->
         <header class="terminal-header">
             <div class="brand">
@@ -177,28 +179,26 @@
         </div>
 
         <!-- Analysis Dashboard -->
-        <main class="analysis-container" style="padding: 0 20px 20px 20px;">
-            <div class="card"
-                style="min-height: 400px; height: calc(100vh - 200px); overflow: hidden; display: flex; flex-direction: column;">
+        <main class="analysis-container"
+            style="padding: 0 20px 20px 20px; display: flex; gap: 20px; height: calc(100vh - 160px);">
 
-                <!-- Title removed as per request -->
-
-
+            <!-- Table Section (40%) -->
+            <div class="card" style="flex: 0 0 400px; display: flex; flex-direction: column; overflow: hidden;">
                 <!-- Strategy Info & Stats -->
                 <div id="strategyInfo"
                     style="display:none; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
                     <div
                         style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
-                        <div style="flex: 1; min-width: 250px;">
+                        <div style="flex: 1; min-width: 150px;">
                             <h3 id="strategyTitle" style="margin: 0 0 8px 0; color: #4caf50; font-size: 1rem;"></h3>
                             <p id="strategyDesc" style="margin: 0; color: #ccc; font-size: 0.85rem; line-height: 1.4;">
                             </p>
                         </div>
                         <div
-                            style="text-align: left; min-width: 140px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px;">
-                            <div style="font-size: 0.8rem; color: #888;">آخر تحديث: <span id="lastUpdate"
+                            style="text-align: left; min-width: 120px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px;">
+                            <div style="font-size: 0.75rem; color: #888;">آخر تحديث: <span id="lastUpdate"
                                     style="color: #fff;">-</span></div>
-                            <div style="margin-top: 4px; font-size: 0.85rem;">
+                            <div style="margin-top: 4px; font-size: 0.8rem;">
                                 <span style="color: #4caf50;">✔ <span id="matchCount">0</span></span> |
                                 <span style="color: #666;">❌ <span id="unmatchCount">0</span></span>
                             </div>
@@ -230,10 +230,30 @@
                     </table>
                 </div>
             </div>
+
+            <!-- Chart Section (Remaining) -->
+            <div class="card" id="chart-card"
+                style="flex: 1; display: flex; flex-direction: column; opacity: 0.5; pointer-events: none; position: relative;">
+                <div
+                    style="padding-bottom: 10px; border-bottom: 1px solid var(--border-color); margin-bottom: 10px; display: flex; justify-content: space-between;">
+                    <span id="chart-title" style="font-weight: bold; color: var(--text-accent);">الرسم البياني</span>
+                    <span id="chart-status" style="font-size: 12px; color: #888;">اختر شركة للعرض</span>
+                </div>
+                <div id="strategy-chart" style="flex: 1; width: 100%;"></div>
+
+                <!-- Overlay message -->
+                <div id="chart-overlay"
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); z-index: 10;">
+                    <div style="font-size: 40px; margin-bottom: 10px;">👈</div>
+                    <div style="color: #fff;">اختر شركة من القائمة لعرض الرسم البياني</div>
+                </div>
+            </div>
+
         </main>
     </div>
 
     <!-- Logic -->
+    <script src="chart_utils.js?v=1.0.0"></script>
     <script src="analysis.js?v=1.2.18"></script>
 </body>
 

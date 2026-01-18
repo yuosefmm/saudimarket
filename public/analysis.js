@@ -12,7 +12,323 @@ if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
-let allStocksData = [];
+// --- Chart Variables ---
+let chart = null;
+let candleSeries = null;
+let volumeSeries = null;
+let smaSeries = null;
+let bbUpperSeries = null;
+let bbLowerSeries = null;
+let rsiSeries = null;
+let currentSymbol = null;
+
+// --- Chart Initialization ---
+// --- Chart Initialization ---
+function initChart() {
+    // Reset all global series variables to ensure a clean state
+    candleSeries = null;
+    volumeSeries = null;
+    smaSeries = null;
+    bbUpperSeries = null;
+    bbLowerSeries = null;
+    rsiSeries = null;
+
+    const container = document.getElementById('strategy-chart');
+    if (!container) {
+        console.error("Chart Container not found!");
+        return false;
+    }
+
+    if (typeof LightweightCharts === 'undefined') {
+        console.error("LightweightCharts library not loaded!");
+        document.getElementById('chart-overlay').innerHTML = `<div style="color:red">Error: Chart Library Missing</div>`;
+        return false;
+    }
+
+    // Destroy existing chart if it exists
+    try {
+        if (chart) {
+            chart.remove();
+            chart = null;
+        }
+    } catch (e) {
+        console.warn("Error removing old chart:", e);
+        chart = null;
+    }
+
+    try {
+        chart = LightweightCharts.createChart(container, {
+            layout: {
+                background: { type: 'solid', color: 'transparent' },
+                textColor: '#94a3b8',
+            },
+            grid: {
+                vertLines: { color: 'rgba(255, 255, 255, 0.05)' },
+                horzLines: { color: 'rgba(255, 255, 255, 0.05)' },
+            },
+            rightPriceScale: {
+                borderColor: 'rgba(255, 255, 255, 0.1)',
+            },
+            timeScale: {
+                borderColor: 'rgba(255, 255, 255, 0.1)',
+                timeVisible: true,
+            },
+        });
+
+        volumeSeries = chart.addHistogramSeries({
+            color: '#26a69a',
+            priceFormat: { type: 'volume' },
+            priceScaleId: '',
+        });
+        volumeSeries.priceScale().applyOptions({ scaleMargins: { top: 0.8, bottom: 0 } });
+
+        candleSeries = chart.addCandlestickSeries({
+            upColor: '#10b981',
+            downColor: '#ef4444',
+            borderVisible: false,
+            wickUpColor: '#10b981',
+            wickDownColor: '#ef4444',
+        });
+
+        // Strategy Overlays
+        smaSeries = chart.addLineSeries({ color: '#2962FF', lineWidth: 2, visible: false, title: 'SMA 20' });
+        bbUpperSeries = chart.addLineSeries({ color: 'rgba(4, 111, 232, 0.5)', lineWidth: 1, visible: false });
+        bbLowerSeries = chart.addLineSeries({ color: 'rgba(4, 111, 232, 0.5)', lineWidth: 1, visible: false });
+
+        // RSI (Separate Scale)
+        rsiSeries = chart.addLineSeries({
+            color: '#a855f7',
+            lineWidth: 2,
+            priceScaleId: 'rsi',
+            visible: false,
+            title: 'RSI 14'
+        });
+        chart.priceScale('rsi').applyOptions({
+            scaleMargins: { top: 0.8, bottom: 0 },
+            visible: false
+        });
+
+        // Resize Observer
+        new ResizeObserver(entries => {
+            if (entries.length === 0 || !entries[0].contentRect) return;
+            const newRect = entries[0].contentRect;
+            chart.applyOptions({ width: newRect.width, height: newRect.height });
+        }).observe(container);
+
+        return true;
+
+    } catch (e) {
+        console.error("Error creating chart:", e);
+        document.getElementById('chart-overlay').innerHTML = `<div style="color:red">Chart Init Failed: ${e.message}</div>`;
+        return false;
+    }
+}
+
+async function loadChartForSymbol(symbol, companyName, strategyMode) {
+    if (!chart || !candleSeries || !volumeSeries) {
+        const success = initChart();
+        if (!success) {
+            console.error("Failed to initialize chart in loadChartForSymbol");
+            return;
+        }
+    }
+
+    currentSymbol = symbol;
+
+    // UI Updates
+    document.getElementById('chart-overlay').style.display = 'flex';
+    document.getElementById('chart-overlay').innerHTML = `<div>جار جلب البيانات...</div>`;
+
+    const strategyNames = {
+        'gainers': 'الأكثر ارتفاعاً',
+        'losers': 'الأكثر انخفاضاً',
+        'volume': 'الأعلى سيولة',
+        'breakout': 'اختراق قوي (سيولة)',
+        'speculative': 'فرص مضاربية',
+        'reversal': 'بداية انعكاس',
+        'morning_star': 'نموذج الصباح',
+        'donchian_breakout': 'اختراق دونشيان',
+        'vwap_bounce': 'ارتكاز VWAP',
+        'bullish_div': 'دايفرجنس إيجابي',
+        'overbought': 'تضخم شرائي'
+    };
+    const strategyTitle = strategyNames[strategyMode] || strategyMode;
+    const titleText = companyName ? `${companyName} (${symbol}) - ${strategyTitle}` : `${symbol} - ${strategyTitle}`;
+    document.getElementById('chart-title').innerText = titleText;
+
+    document.getElementById('chart-card').style.opacity = '1';
+    document.getElementById('chart-card').style.pointerEvents = 'all';
+
+    try {
+        // 1. Determine Resolution
+        let resolution = '1D';
+        const intradayStrategies = ['morning_star', 'vwap_bounce', 'bullish_div'];
+        if (intradayStrategies.includes(strategyMode)) {
+            resolution = '15m'; // Force 15m for these strategies
+        }
+
+        // 2. Fetch Data (Using Shared Util)
+        const rawJson = await fetchStockHistory(symbol, resolution);
+
+        // 3. Process Data (Using Shared Util)
+        const data = processStockData(rawJson);
+
+        // 4. Render to Chart
+        candleSeries.setData(data.candles);
+        volumeSeries.setData(data.volume);
+
+        // Update Status
+        if (resolution !== '1D') {
+            document.getElementById('chart-status').innerHTML += ` <span style="color:#aaa; font-size:10px;">(${resolution})</span>`;
+        }
+
+        const lastCandle = data.candles[data.candles.length - 1];
+        if (lastCandle) {
+            const prevClose = data.candles.length > 1 ? data.candles[data.candles.length - 2].close : lastCandle.close;
+            const priceColor = (lastCandle.close >= prevClose) ? '#10b981' : '#ef4444';
+            document.getElementById('chart-status').innerHTML = `
+                <span dir="ltr" style="color: ${priceColor}; font-weight: bold; font-family: 'JetBrains Mono', monospace; font-size: 14px;">
+                    ${lastCandle.close.toFixed(2)}
+                </span>
+             `;
+        } else {
+            document.getElementById('chart-status').innerText = '';
+        }
+
+        document.getElementById('chart-overlay').style.display = 'none';
+
+        // 5. Apply Indicators (Pass processed data to avoid recalc)
+        applyStrategyIndicators(strategyMode, data);
+
+        chart.timeScale().fitContent();
+
+    } catch (e) {
+        console.error(e);
+        document.getElementById('chart-overlay').innerHTML = `<div style="text-align:center; color: #ef4444;">Error: ${e.message}</div>`;
+    }
+}
+
+function applyStrategyIndicators(mode, data) {
+    const candles = data.candles;
+
+    // Reset all
+    smaSeries.applyOptions({ visible: false });
+    bbUpperSeries.applyOptions({ visible: false });
+    bbLowerSeries.applyOptions({ visible: false });
+    rsiSeries.applyOptions({ visible: false });
+    chart.priceScale('rsi').applyOptions({ visible: false });
+    candleSeries.priceScale().applyOptions({ scaleMargins: { top: 0.1, bottom: 0.2 } }); // Default margins
+
+    if (mode === 'donchian_breakout' || mode === 'breakout' || mode === 'speculative') {
+        // Show SMA 20 (Pre-calculated)
+        if (data.sma && data.sma.length > 0) {
+            smaSeries.setData(data.sma);
+            smaSeries.applyOptions({ visible: true });
+        }
+
+        // Show Donchian Channel (20 High/Low) - Custom Calc still needed
+        // We reused BB series for these lines visually
+        const high20 = calculateDonchian(candles, 20, 'high');
+        const low20 = calculateDonchian(candles, 20, 'low');
+
+        bbUpperSeries.setData(high20);
+        bbUpperSeries.applyOptions({ visible: true, title: 'Upper 20', color: '#4caf50' });
+
+        bbLowerSeries.setData(low20);
+        bbLowerSeries.applyOptions({ visible: true, title: 'Lower 20', color: '#ef4444' });
+    }
+
+    if (mode === 'vwap_bounce') {
+        // VWAP proxy using SMA 20 (or calculate true VWAP if added to utils)
+        if (data.sma && data.sma.length > 0) {
+            smaSeries.setData(data.sma);
+            smaSeries.applyOptions({ visible: true, title: 'SMA 20 (Ref)' });
+        }
+    }
+
+    if (mode === 'overbought' || mode === 'speculative' || mode === 'reversal' || mode === 'bullish_div') {
+        // Use Pre-calculated RSI
+        if (data.rsi && data.rsi.length > 0) {
+            rsiSeries.setData(data.rsi);
+            rsiSeries.applyOptions({ visible: true });
+            chart.priceScale('rsi').applyOptions({ visible: true });
+            candleSeries.priceScale().applyOptions({ scaleMargins: { top: 0.1, bottom: 0.3 } }); // Make room for RSI
+        }
+    }
+}
+
+// --- Indicators Calculation ---
+// calculateSMA and calculateRSI removed (using shared utils/pre-calc)
+
+function calculateDonchian(candles, period, type) {
+    const result = [];
+    for (let i = 0; i < candles.length; i++) {
+        if (i < period - 1) { continue; }
+        // Let's take max of LAST period candles (inclusive of current for Breakout context, or exclusive?)
+        // Standard Donchian is usually High of last N days. If today breaks it, it's a breakout.
+        let slice = candles.slice(i - period + 1, i + 1);
+        let val = 0;
+        if (type === 'high') val = Math.max(...slice.map(c => c.high));
+        if (type === 'low') val = Math.min(...slice.map(c => c.low));
+        result.push({ time: candles[i].time, value: val });
+    }
+    return result;
+}
+
+function calculateRSI(candles, period) {
+    const result = [];
+    let gains = 0, losses = 0;
+    // Simple RSI implementation
+    for (let i = 1; i < candles.length; i++) {
+        const change = candles[i].close - candles[i - 1].close;
+        if (i <= period) {
+            if (change > 0) gains += change; else losses += Math.abs(change);
+            if (i === period) {
+                let avgGain = gains / period;
+                let avgLoss = losses / period;
+                let rs = avgGain / avgLoss;
+                result.push({ time: candles[i].time, value: 100 - (100 / (1 + rs)) });
+            }
+        } else {
+            // Smoothed
+            let gain = change > 0 ? change : 0;
+            let loss = change < 0 ? Math.abs(change) : 0;
+            // We need previous averages. But simplified for this view:
+            // Re-calculate or use array?
+            // Let's stick to standard formula if possible, but for 'preview' simple is OK.
+            // Actually to match server, we should be precise, but clientside approx is enough for visual.
+
+            // Accurate way:
+            // We need to keep track of avgGain, avgLoss
+        }
+    }
+    // Re-impl proper Loop
+    let rsiArray = [];
+    let avgGain = 0, avgLoss = 0;
+    for (let i = 1; i < candles.length; i++) {
+        const change = candles[i].close - candles[i - 1].close;
+        const gain = change > 0 ? change : 0;
+        const loss = change < 0 ? Math.abs(change) : 0;
+
+        if (i <= period) {
+            avgGain += gain;
+            avgLoss += loss;
+            if (i === period) {
+                avgGain /= period;
+                avgLoss /= period;
+                const rs = avgGain / avgLoss;
+                rsiArray.push({ time: candles[i].time, value: 100 - (100 / (1 + rs)) });
+            }
+        } else {
+            avgGain = (avgGain * (period - 1) + gain) / period;
+            avgLoss = (avgLoss * (period - 1) + loss) / period;
+            const rs = avgGain / avgLoss;
+            rsiArray.push({ time: candles[i].time, value: 100 - (100 / (1 + rs)) });
+        }
+    }
+    return rsiArray;
+}
+
 
 // --- Strategy Configuration ---
 const STRATEGIES = {
@@ -90,7 +406,21 @@ const STRATEGIES = {
 
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Init Chart (Independently)
     try {
+        initChart();
+    } catch (chartErr) {
+        console.error("Chart Init Error:", chartErr);
+    }
+
+    // 2. Load Data
+    try {
+        // Ensure Firebase is initialized
+        if (!firebase.apps.length) {
+            console.log("Firebase not initialized in DOMContentLoaded, initializing now...");
+            firebase.initializeApp(firebaseConfig);
+        }
+
         const db = firebase.firestore();
         console.log("Fetching Analysis Data...");
 
@@ -107,9 +437,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             const changeEl = document.getElementById('header-tasi-change');
 
             if (priceEl && changeEl) {
-                priceEl.innerText = tasi.price.toFixed(2);
-                changeEl.innerText = `${tasi.change > 0 ? '+' : ''}${tasi.change.toFixed(2)} (${tasi.percent.toFixed(2)}%)`;
-                const colorVar = tasi.change >= 0 ? 'var(--up-color)' : 'var(--down-color)';
+                // Ensure values exist
+                const p = tasi.price || 0;
+                const c = tasi.change || 0;
+                const pct = tasi.percent || 0;
+
+                priceEl.innerText = p.toFixed(2);
+                changeEl.innerText = `${c > 0 ? '+' : ''}${c.toFixed(2)} (${pct.toFixed(2)}%)`;
+                const colorVar = c >= 0 ? 'var(--up-color)' : 'var(--down-color)';
                 priceEl.style.color = colorVar;
                 changeEl.style.color = colorVar;
             }
@@ -134,11 +469,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     } catch (e) {
         console.error("Error loading analysis data:", e);
-        document.getElementById('analysis-table-body').innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">Error loading data.</td></tr>';
+        // Alert User
+        alert("حدث خطأ في تحميل البيانات: " + e.message);
+        document.getElementById('analysis-table-body').innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">حدث خطأ في تحميل البيانات.<br><small>' + e.message + '</small></td></tr>';
     }
 });
 
+let currentMode = 'gainers'; // Track global mode
+
 function updateView(mode) {
+    currentMode = mode; // Update mode
     const tableBody = document.getElementById('analysis-table-body');
     if (!tableBody) return;
 
@@ -155,7 +495,6 @@ function updateView(mode) {
     updateStrategyInfo(mode, sortedList);
 
     // 3. Render Table
-    // Use custom render if defined, otherwise default
     if (strategy.render) {
         strategy.render(sortedList);
     } else {
@@ -230,7 +569,16 @@ function renderTable(list) {
 
     list.forEach(stock => {
         const tr = document.createElement('tr');
+        tr.style.cursor = 'pointer'; // Make clickable
         tr.style.borderBottom = '1px solid rgba(255, 255, 255, 0.05)';
+
+        // Add CLick Event
+        tr.onclick = () => {
+            // Highlight row
+            document.querySelectorAll('#analysis-table-body tr').forEach(r => r.style.background = 'transparent');
+            tr.style.background = 'rgba(255, 255, 255, 0.05)';
+            loadChartForSymbol(stock.symbol, stock.name, currentMode);
+        };
 
         const changeClass = (stock.percent >= 0) ? 'text-up' : 'text-down';
         const sign = (stock.percent > 0) ? '+' : '';
@@ -270,10 +618,6 @@ function renderDonchianTable(list) {
     tableBody.innerHTML = '';
 
     if (list.length === 0) {
-        // Reuse default empty check logic, but if this function is called directly...
-        // But logic in updateView handles emptyMsg generally. 
-        // However, updateView calls this even if list is empty if we want custom table.
-        // Let's keep it consistent.
         const msg = STRATEGIES['donchian_breakout'].emptyMsg || 'لا توجد بيانات.';
         tableBody.innerHTML = `
             <tr><td colspan="4" style="text-align:center; padding: 20px;">
@@ -284,7 +628,16 @@ function renderDonchianTable(list) {
 
     list.forEach(stock => {
         const tr = document.createElement('tr');
+        tr.style.cursor = 'pointer';
         tr.style.borderBottom = '1px solid rgba(255, 255, 255, 0.05)';
+
+        // Add CLick Event
+        tr.onclick = () => {
+            // Highlight row
+            document.querySelectorAll('#analysis-table-body tr').forEach(r => r.style.background = 'transparent');
+            tr.style.background = 'rgba(255, 255, 255, 0.05)';
+            loadChartForSymbol(stock.symbol, stock.name, currentMode);
+        };
 
         const changeClass = (stock.percent >= 0) ? 'text-up' : 'text-down';
         const sign = (stock.percent > 0) ? '+' : '';

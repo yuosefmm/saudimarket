@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btnUpdate = document.getElementById('btn-run-update');
     if (btnUpdate) {
         btnUpdate.addEventListener('click', async () => {
-            if (!confirm('هل تريد بدء تحديث البيانات؟ (قد يستغرق عدة دقائق)')) return;
+            if (!confirm('هل تريد تحديث البيانات الناقصة فقط (تراكمي) والحفاظ على التاريخ؟\n(يتطلب تشغيل الخادم المحلي server.py)')) return;
 
             try {
                 btnUpdate.disabled = true;
